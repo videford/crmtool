@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Встречи — crmTool{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-5">
+  <h1 class="text-2xl font-semibold">Встречи</h1>
+  <div class="text-sm">
+    <a href="/meetings?scope=upcoming" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope!='past' else 'text-slate-600' }}">Предстоящие</a>
+    <a href="/meetings?scope=past" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope=='past' else 'text-slate-600' }}">Прошедшие</a>
+  </div>
+</div>
+
+<div class="grid grid-cols-3 gap-6">
+  <div class="col-span-2 bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-slate-500 text-left">
+        <tr><th class="px-4 py-2 font-medium">Когда</th><th class="px-4 py-2 font-medium">Тема</th><th class="px-4 py-2 font-medium">Клиент</th></tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for mt in meetings %}
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-2 whitespace-nowrap text-slate-600">{{ mt.starts_at | dt }}</td>
+          <td class="px-4 py-2 font-medium">{{ mt.title }}</td>
+          <td class="px-4 py-2"><a href="/accounts/{{ mt.account_id }}#meetings" class="text-indigo-600 hover:underline">{{ mt.account.name }}</a></td>
+        </tr>
+        {% else %}<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">Встреч нет.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if current_user.role in ['admin','manager'] %}
+  <div class="bg-white rounded-xl shadow-sm p-5">
+    <h2 class="font-semibold mb-3">Новая встреча</h2>
+    <form method="post" action="/meetings" class="space-y-2">
+      <input type="hidden" name="redirect" value="/meetings">
+      <select name="account_id" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <option value="">— клиент * —</option>
+        {% for a in accounts %}<option value="{{ a.id }}">{{ a.name }}</option>{% endfor %}
+      </select>
+      <input name="title" placeholder="Тема *" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <label class="block text-xs text-slate-500">Начало *<input name="starts_at" type="datetime-local" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
+      <label class="block text-xs text-slate-500">Конец<input name="ends_at" type="datetime-local" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
+      <input name="location" placeholder="Место / ссылка" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <input name="participants" placeholder="Участники" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <button class="w-full bg-slate-900 text-white rounded py-2 text-sm hover:bg-slate-700">Запланировать</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

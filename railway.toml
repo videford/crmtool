@@ -1,0 +1,15 @@
+# Railway config. Create two services from this repo:
+#   1) web    -> uses startCommand below (default)
+#   2) worker -> override startCommand with: python -m worker.main
+# Add the PostgreSQL plugin; Railway injects DATABASE_URL automatically.
+# NOTE: Railway's DATABASE_URL is postgresql://... ; app.config rewrites it to
+# the asyncpg driver at runtime, so no manual editing is needed.
+
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "python -m app.init_db && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"

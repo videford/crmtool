@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Настройки — crmTool{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-5">Настройки</h1>
+
+<div class="grid grid-cols-2 gap-6">
+  <div class="space-y-6">
+    <section class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Профиль</h2>
+      <div class="text-sm space-y-1">
+        <div><span class="text-slate-500">Имя:</span> {{ current_user.name }}</div>
+        <div><span class="text-slate-500">Email:</span> {{ current_user.email }}</div>
+        <div><span class="text-slate-500">Роль:</span> {{ current_user.role }}</div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Telegram-уведомления</h2>
+      {% if not TELEGRAM_ENABLED %}
+        <p class="text-sm text-amber-600">Бот не настроен (нет TELEGRAM_BOT_TOKEN).</p>
+      {% elif current_user.telegram_chat_id %}
+        <p class="text-sm text-green-600 mb-3">✓ Telegram подключён (chat {{ current_user.telegram_chat_id }}).</p>
+        <form method="post" action="/settings/telegram/unlink">
+          <button class="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-slate-50">Отвязать</button>
+        </form>
+      {% else %}
+        {% if current_user.telegram_link_code %}
+        <p class="text-sm text-slate-600 mb-2">Откройте бота в Telegram и отправьте команду:</p>
+        <code class="block bg-slate-100 rounded px-3 py-2 text-sm mb-3">/start {{ current_user.telegram_link_code }}</code>
+        {% endif %}
+        <form method="post" action="/settings/telegram/regenerate">
+          <button class="text-sm bg-slate-900 text-white rounded px-3 py-1.5 hover:bg-slate-700">
+            {{ "Сгенерировать новый код" if current_user.telegram_link_code else "Получить код привязки" }}
+          </button>
+        </form>
+      {% endif %}
+
+      <form method="post" action="/settings/notify" class="mt-4 flex items-center gap-2 text-sm">
+        <input type="checkbox" name="notify_activities" {{ 'checked' if current_user.notify_activities }} onchange="this.form.submit()">
+        <label>Уведомлять обо всех активностях клиентов (не только встречи)</label>
+      </form>
+    </section>
+  </div>
+
+  {% if current_user.role == 'admin' %}
+  <section class="bg-white rounded-xl shadow-sm p-5">
+    <h2 class="font-semibold mb-3">Пользователи</h2>
+    <ul class="divide-y divide-slate-100 mb-4">
+      {% for u in users %}
+      <li class="py-2 text-sm flex items-center justify-between">
+        <div>
+          <span class="font-medium">{{ u.name }}</span>
+          <span class="text-slate-400">· {{ u.email }} · {{ u.role }}</span>
+        </div>
+        {% if u.id != current_user.id %}
+        <form method="post" action="/settings/users/{{ u.id }}/delete" onsubmit="return confirm('Удалить пользователя?')">
+          <button class="text-slate-300 hover:text-red-500 text-xs">✕</button>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="/settings/users" class="grid grid-cols-2 gap-2">
+      <input name="name" placeholder="Имя *" required class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <input name="email" type="email" placeholder="Email *" required class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <input name="password" placeholder="Пароль *" required class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <select name="role" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        {% for r in ROLES %}<option value="{{ r }}">{{ r }}</option>{% endfor %}
+      </select>
+      <button class="col-span-2 bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Добавить пользователя</button>
+    </form>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

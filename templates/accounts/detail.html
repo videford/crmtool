@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ account.name }} — crmTool{% endblock %}
+{% block content %}
+{% set can_edit = current_user.role in ['admin','manager'] %}
+{% set back = '/accounts/' ~ account.id %}
+
+<div class="flex items-start justify-between mb-5">
+  <div>
+    <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-semibold">{{ account.name }}</h1>
+      <span class="text-xs px-2 py-0.5 rounded bg-slate-200 text-slate-700">{{ "Банк" if account.type=="bank" else "Компания" }}</span>
+    </div>
+    <div class="text-sm text-slate-500 mt-1">
+      {{ account.industry or "—" }}
+      {% if account.website %} · <a href="{{ account.website }}" target="_blank" class="text-indigo-600">{{ account.website }}</a>{% endif %}
+      · Ответственный: {{ account.owner.name if account.owner else "—" }}
+    </div>
+  </div>
+  {% if can_edit %}
+  <div class="flex gap-2">
+    <a href="/accounts/{{ account.id }}/edit" class="text-sm border border-slate-300 rounded px-3 py-1.5 hover:bg-white">Редактировать</a>
+    {% if current_user.role == 'admin' %}
+    <form method="post" action="/accounts/{{ account.id }}/delete" onsubmit="return confirm('Удалить клиента и все связанные данные?')">
+      <button class="text-sm border border-red-200 text-red-600 rounded px-3 py-1.5 hover:bg-red-50">Удалить</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if account.notes %}
+<div class="bg-white rounded-xl shadow-sm p-4 mb-4 text-sm whitespace-pre-line text-slate-700">{{ account.notes }}</div>
+{% endif %}
+
+<div class="grid grid-cols-2 gap-6">
+  <!-- LEFT COLUMN -->
+  <div class="space-y-6">
+    <!-- Contacts -->
+    <section id="contacts" class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Контакты</h2>
+      <ul class="divide-y divide-slate-100 mb-3">
+        {% for c in account.contacts %}
+        <li class="py-2 text-sm">
+          <div class="font-medium">{{ c.name }} {% if c.position %}<span class="text-slate-400 font-normal">· {{ c.position }}</span>{% endif %}</div>
+          <div class="text-slate-500">
+            {{ c.email or "" }}{% if c.phone %} · {{ c.phone }}{% endif %}{% if c.telegram %} · TG {{ c.telegram }}{% endif %}
+          </div>
+        </li>
+        {% else %}<li class="py-2 text-sm text-slate-400">Контактов нет.</li>{% endfor %}
+      </ul>
+      {% if can_edit %}
+      <form method="post" action="/accounts/{{ account.id }}/contacts" class="grid grid-cols-2 gap-2">
+        <input name="name" placeholder="Имя *" required class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="position" placeholder="Должность" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="email" placeholder="Email" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="phone" placeholder="Телефон" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="telegram" placeholder="Telegram" class="border border-slate-300 rounded px-2 py-1.5 text-sm col-span-2">
+        <button class="col-span-2 bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Добавить контакт</button>
+      </form>
+      {% endif %}
+    </section>
+
+    <!-- Deals -->
+    <section id="deals" class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Сделки</h2>
+      <ul class="divide-y divide-slate-100 mb-3">
+        {% for d in deals %}
+        <li class="py-2 text-sm flex items-center justify-between gap-2">
+          <div>
+            <div class="font-medium">{{ d.title }}</div>
+            <div class="text-slate-500">
+              {% if d.amount %}{{ "{:,.0f}".format(d.amount) }} {{ d.currency }}{% endif %}
+              {% if d.probability %} · {{ d.probability }}%{% endif %}
+              {% if d.expected_close %} · до {{ d.expected_close | dt('%d.%m.%Y') }}{% endif %}
+            </div>
+          </div>
+          {% if can_edit %}
+          <form method="post" action="/deals/{{ d.id }}/stage" class="flex items-center gap-1">
+            <input type="hidden" name="redirect" value="{{ back }}#deals">
+            <select name="stage" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
+              {% for s in DEAL_STAGES %}<option value="{{ s }}" {{ 'selected' if d.stage==s }}>{{ s }}</option>{% endfor %}
+            </select>
+          </form>
+          {% else %}{{ m.stage_badge(d.stage) }}{% endif %}
+        </li>
+        {% else %}<li class="py-2 text-sm text-slate-400">Сделок нет.</li>{% endfor %}
+      </ul>
+      {% if can_edit %}
+      <form method="post" action="/accounts/{{ account.id }}/deals" class="grid grid-cols-2 gap-2">
+        <input name="title" placeholder="Название сделки *" required class="border border-slate-300 rounded px-2 py-1.5 text-sm col-span-2">
+        <select name="stage" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+          {% for s in DEAL_STAGES %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </select>
+        <input name="amount" type="number" step="0.01" placeholder="Сумма" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="probability" type="number" min="0" max="100" placeholder="Вероятность %" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="expected_close" type="datetime-local" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <button class="col-span-2 bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Добавить сделку</button>
+      </form>
+      {% endif %}
+    </section>
+
+    <!-- Tasks -->
+    <section id="tasks" class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Задачи {% if LINEAR_ENABLED %}<span class="text-xs text-slate-400 font-normal">(синхр. с Linear)</span>{% endif %}</h2>
+      <ul class="divide-y divide-slate-100 mb-3">
+        {% for t in tasks %}
+        <li class="py-2 text-sm flex items-center justify-between gap-2">
+          <div>
+            <div class="font-medium">{{ t.title }}
+              {% if t.source=='auto' %}<span class="text-xs text-slate-400">авто</span>{% endif %}
+              {% if t.linear_url %} · <a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}
+            </div>
+          </div>
+          {% if can_edit %}
+          <form method="post" action="/tasks/{{ t.id }}/status" class="flex items-center gap-1">
+            <input type="hidden" name="redirect" value="{{ back }}#tasks">
+            <select name="status" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
+              {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if t.status==s }}>{{ s }}</option>{% endfor %}
+            </select>
+          </form>
+          {% else %}{{ m.task_badge(t.status) }}{% endif %}
+        </li>
+        {% else %}<li class="py-2 text-sm text-slate-400">Задач нет.</li>{% endfor %}
+      </ul>
+      {% if can_edit %}
+      <form method="post" action="/accounts/{{ account.id }}/tasks" class="space-y-2">
+        <input name="title" placeholder="Название задачи *" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <textarea name="description" rows="2" placeholder="Описание" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></textarea>
+        <button class="w-full bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Создать задачу{{ " в Linear" if LINEAR_ENABLED }}</button>
+      </form>
+      {% endif %}
+    </section>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="space-y-6">
+    <!-- Meetings -->
+    <section id="meetings" class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Встречи</h2>
+      <ul class="divide-y divide-slate-100 mb-3">
+        {% for mt in meetings %}
+        <li class="py-2 text-sm flex items-start justify-between gap-2">
+          <div>
+            <div class="font-medium">{{ mt.title }}
+              {% if mt.starts_at >= now %}<span class="text-xs text-green-600">предстоит</span>{% endif %}
+            </div>
+            <div class="text-slate-500">{{ mt.starts_at | dt }}{% if mt.location %} · {{ mt.location }}{% endif %}</div>
+            {% if mt.participants %}<div class="text-slate-400 text-xs">{{ mt.participants }}</div>{% endif %}
+          </div>
+          {% if can_edit %}
+          <form method="post" action="/meetings/{{ mt.id }}/delete" onsubmit="return confirm('Удалить встречу?')">
+            <button class="text-slate-300 hover:text-red-500 text-xs">✕</button>
+          </form>
+          {% endif %}
+        </li>
+        {% else %}<li class="py-2 text-sm text-slate-400">Встреч нет.</li>{% endfor %}
+      </ul>
+      {% if can_edit %}
+      <form method="post" action="/meetings" class="space-y-2">
+        <input type="hidden" name="account_id" value="{{ account.id }}">
+        <input type="hidden" name="redirect" value="{{ back }}#meetings">
+        <input name="title" placeholder="Тема встречи *" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <div class="grid grid-cols-2 gap-2">
+          <label class="text-xs text-slate-500">Начало *<input name="starts_at" type="datetime-local" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
+          <label class="text-xs text-slate-500">Конец<input name="ends_at" type="datetime-local" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
+        </div>
+        <input name="location" placeholder="Место / ссылка на звонок" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <input name="participants" placeholder="Участники" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <button class="w-full bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Запланировать встречу</button>
+      </form>
+      {% endif %}
+    </section>
+
+    <!-- Activity -->
+    <section id="activity" class="bg-white rounded-xl shadow-sm p-5">
+      <h2 class="font-semibold mb-3">Активность</h2>
+      {% if can_edit %}
+      <form method="post" action="/accounts/{{ account.id }}/activities" class="flex gap-2 mb-3">
+        <select name="type" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+          {% for t in ['note','call','email','payment'] %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+        </select>
+        <input name="body" placeholder="Что произошло…" class="flex-1 border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <button class="bg-slate-100 hover:bg-slate-200 rounded px-3 text-sm">Добавить</button>
+      </form>
+      {% endif %}
+      <ul class="space-y-2 max-h-96 overflow-y-auto">
+        {% for a in activities %}
+        <li class="text-sm border-l-2 border-slate-200 pl-3">
+          <div class="text-slate-400 text-xs">{{ a.created_at | dt }} · {{ a.type }}</div>
+          <div>{{ a.body or "" }}
+            {% if a.payload and a.payload.linear_url %} <a href="{{ a.payload.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}
+          </div>
+        </li>
+        {% else %}<li class="text-sm text-slate-400">Пока нет активности.</li>{% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>
+{% endblock %}

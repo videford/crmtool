@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}crmTool{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <style>
+    [x-cloak]{display:none}
+    body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+{% if current_user %}
+<div class="flex min-h-screen">
+  <aside class="w-56 bg-slate-900 text-slate-200 flex flex-col shrink-0">
+    <div class="px-5 py-4 text-lg font-semibold border-b border-slate-700">crmTool</div>
+    <nav class="flex-1 px-2 py-3 space-y-1 text-sm">
+      {% set nav = [('/', 'Дашборд'), ('/accounts', 'Клиенты'), ('/deals', 'Воронка'), ('/meetings', 'Встречи'), ('/tasks', 'Задачи'), ('/settings', 'Настройки')] %}
+      {% for href, label in nav %}
+      <a href="{{ href }}" class="block px-3 py-2 rounded hover:bg-slate-700
+        {% if request.url.path == href or (href != '/' and request.url.path.startswith(href)) %}bg-slate-700 font-medium{% endif %}">{{ label }}</a>
+      {% endfor %}
+    </nav>
+    <div class="px-4 py-3 border-t border-slate-700 text-xs">
+      <div class="font-medium text-slate-100">{{ current_user.name }}</div>
+      <div class="text-slate-400">{{ current_user.role }}</div>
+      <a href="/logout" class="inline-block mt-2 text-slate-300 hover:text-white">Выйти →</a>
+    </div>
+  </aside>
+  <main class="flex-1 p-6 overflow-x-hidden">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% else %}
+  {% block guest %}{% endblock %}
+{% endif %}
+</body>
+</html>

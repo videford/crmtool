@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Задачи — crmTool{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-5">
+  <h1 class="text-2xl font-semibold">Задачи</h1>
+  <div class="text-sm">
+    {% for s, label in [('active','Активные'),('done','Выполненные'),('all','Все')] %}
+    <a href="/tasks?status={{ s }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if status==s else 'text-slate-600' }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-slate-500 text-left">
+      <tr>
+        <th class="px-4 py-2 font-medium">Задача</th>
+        <th class="px-4 py-2 font-medium">Клиент</th>
+        <th class="px-4 py-2 font-medium">Источник</th>
+        <th class="px-4 py-2 font-medium">Статус</th>
+        <th class="px-4 py-2 font-medium">Linear</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {% for t in tasks %}
+      <tr class="hover:bg-slate-50">
+        <td class="px-4 py-2 font-medium">{{ t.title }}</td>
+        <td class="px-4 py-2"><a href="/accounts/{{ t.account_id }}#tasks" class="text-indigo-600 hover:underline">{{ t.account.name }}</a></td>
+        <td class="px-4 py-2 text-slate-500">{{ t.source }}</td>
+        <td class="px-4 py-2">
+          {% if current_user.role in ['admin','manager'] %}
+          <form method="post" action="/tasks/{{ t.id }}/status">
+            <input type="hidden" name="redirect" value="/tasks?status={{ status }}">
+            <select name="status" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
+              {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if t.status==s }}>{{ s }}</option>{% endfor %}
+            </select>
+          </form>
+          {% else %}{{ m.task_badge(t.status) }}{% endif %}
+        </td>
+        <td class="px-4 py-2">{% if t.linear_url %}<a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">↗</a>{% else %}—{% endif %}</td>
+      </tr>
+      {% else %}<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">Задач нет.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

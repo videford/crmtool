@@ -1,0 +1,23 @@
+{% macro stage_badge(stage) %}
+{% set colors = {
+  'lead':'bg-slate-200 text-slate-700',
+  'qualified':'bg-sky-100 text-sky-700',
+  'demo':'bg-indigo-100 text-indigo-700',
+  'pilot':'bg-amber-100 text-amber-700',
+  'procurement':'bg-purple-100 text-purple-700',
+  'contract':'bg-cyan-100 text-cyan-700',
+  'won':'bg-green-100 text-green-700',
+  'lost':'bg-red-100 text-red-700'
+} %}
+<span class="text-xs px-2 py-0.5 rounded {{ colors.get(stage,'bg-slate-200 text-slate-700') }}">{{ stage }}</span>
+{% endmacro %}
+
+{% macro task_badge(status) %}
+{% set colors = {
+  'open':'bg-slate-200 text-slate-700',
+  'in_progress':'bg-amber-100 text-amber-700',
+  'done':'bg-green-100 text-green-700',
+  'canceled':'bg-red-100 text-red-700'
+} %}
+<span class="text-xs px-2 py-0.5 rounded {{ colors.get(status,'bg-slate-200 text-slate-700') }}">{{ status }}</span>
+{% endmacro %}

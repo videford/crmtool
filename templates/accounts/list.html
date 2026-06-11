@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Клиенты — crmTool{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-5">
+  <h1 class="text-2xl font-semibold">Клиенты</h1>
+  <a href="/accounts/new" class="bg-slate-900 text-white text-sm rounded px-4 py-2 hover:bg-slate-700">+ Новый клиент</a>
+</div>
+
+<form method="get" action="/accounts" class="mb-4">
+  <input name="q" value="{{ q }}" placeholder="Поиск по названию или отрасли…"
+         class="w-full max-w-md border border-slate-300 rounded px-3 py-2 text-sm">
+</form>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-slate-500 text-left">
+      <tr>
+        <th class="px-4 py-2 font-medium">Название</th>
+        <th class="px-4 py-2 font-medium">Тип</th>
+        <th class="px-4 py-2 font-medium">Отрасль</th>
+        <th class="px-4 py-2 font-medium">Ответственный</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {% for a in accounts %}
+      <tr class="hover:bg-slate-50">
+        <td class="px-4 py-2"><a href="/accounts/{{ a.id }}" class="font-medium text-slate-800 hover:underline">{{ a.name }}</a></td>
+        <td class="px-4 py-2 text-slate-600">{{ "Банк" if a.type == "bank" else "Компания" }}</td>
+        <td class="px-4 py-2 text-slate-600">{{ a.industry or "—" }}</td>
+        <td class="px-4 py-2 text-slate-600">{{ a.owner.name if a.owner else "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">Клиентов пока нет.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

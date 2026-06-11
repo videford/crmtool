@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Дашборд — crmTool{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-5">Дашборд</h1>
+
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-3xl font-semibold">{{ counts.accounts }}</div>
+    <div class="text-sm text-slate-500">Клиентов</div>
+  </div>
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-3xl font-semibold">{{ counts.meetings }}</div>
+    <div class="text-sm text-slate-500">Предстоящих встреч</div>
+  </div>
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-3xl font-semibold">{{ counts.open_tasks }}</div>
+    <div class="text-sm text-slate-500">Открытых задач</div>
+  </div>
+</div>
+
+<div class="grid grid-cols-2 gap-6">
+  <div class="bg-white rounded-xl p-5 shadow-sm">
+    <h2 class="font-semibold mb-3">Ближайшие встречи (7 дней)</h2>
+    {% if upcoming %}
+    <ul class="divide-y divide-slate-100">
+      {% for mt in upcoming %}
+      <li class="py-2 flex justify-between gap-3">
+        <div>
+          <a href="/accounts/{{ mt.account_id }}#meetings" class="font-medium hover:underline">{{ mt.title }}</a>
+          <div class="text-sm text-slate-500">{{ mt.account.name }}</div>
+        </div>
+        <div class="text-sm text-slate-600 whitespace-nowrap">{{ mt.starts_at | dt }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-slate-400">Нет запланированных встреч.</p>{% endif %}
+  </div>
+
+  <div class="bg-white rounded-xl p-5 shadow-sm">
+    <h2 class="font-semibold mb-3">Открытые задачи</h2>
+    {% if open_tasks %}
+    <ul class="divide-y divide-slate-100">
+      {% for t in open_tasks %}
+      <li class="py-2 flex justify-between gap-3">
+        <div>
+          <a href="/accounts/{{ t.account_id }}#tasks" class="font-medium hover:underline">{{ t.title }}</a>
+          <div class="text-sm text-slate-500">{{ t.account.name }}{% if t.linear_url %} · <a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}</div>
+        </div>
+        {{ m.task_badge(t.status) }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="text-sm text-slate-400">Открытых задач нет.</p>{% endif %}
+  </div>
+</div>
+
+<div class="bg-white rounded-xl p-5 shadow-sm mt-6">
+  <h2 class="font-semibold mb-3">Последняя активность</h2>
+  {% if recent %}
+  <ul class="divide-y divide-slate-100">
+    {% for a in recent %}
+    <li class="py-2 flex justify-between gap-3 text-sm">
+      <div>
+        <span class="text-slate-400">[{{ a.type }}]</span>
+        <a href="/accounts/{{ a.account_id }}" class="font-medium hover:underline">{{ a.account.name }}</a>
+        — {{ a.body or "" }}
+      </div>
+      <div class="text-slate-400 whitespace-nowrap">{{ a.created_at | dt }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="text-sm text-slate-400">Пока нет активности.</p>{% endif %}
+</div>
+{% endblock %}
