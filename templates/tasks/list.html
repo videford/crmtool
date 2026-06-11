@@ -2,7 +2,7 @@
 {% import "_macros.html" as m %}
 {% block title %}Задачи — crmTool{% endblock %}
 {% block content %}
-<div class="flex items-center justify-between mb-5">
+<div class="flex items-center justify-between gap-3 flex-wrap mb-5">
   <h1 class="text-2xl font-semibold">Задачи</h1>
   <div class="text-sm">
     {% for s, label in [('active','Активные'),('done','Выполненные'),('all','Все')] %}
@@ -11,8 +11,8 @@
   </div>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
-  <table class="w-full text-sm">
+<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+  <table class="w-full text-sm min-w-[640px]">
     <thead class="bg-slate-50 text-slate-500 text-left">
       <tr>
         <th class="px-4 py-2 font-medium">Задача</th>

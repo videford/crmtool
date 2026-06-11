@@ -36,9 +36,10 @@ async def main():
     log.info("Scheduler started (reminders every 1 min).")
 
     if settings.telegram_enabled:
-        from app.bot.dispatcher import build_bot, dp
+        from app.bot.dispatcher import build_bot, dp, setup_bot_commands
 
         bot = build_bot()
+        await setup_bot_commands(bot)
         log.info("Starting Telegram bot (polling)…")
         await dp.start_polling(bot, handle_signals=False)
     else:

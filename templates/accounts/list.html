@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Клиенты — crmTool{% endblock %}
 {% block content %}
-<div class="flex items-center justify-between mb-5">
+<div class="flex items-center justify-between gap-3 flex-wrap mb-5">
   <h1 class="text-2xl font-semibold">Клиенты</h1>
   <a href="/accounts/new" class="bg-slate-900 text-white text-sm rounded px-4 py-2 hover:bg-slate-700">+ Новый клиент</a>
 </div>
@@ -11,8 +11,8 @@
          class="w-full max-w-md border border-slate-300 rounded px-3 py-2 text-sm">
 </form>
 
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
-  <table class="w-full text-sm">
+<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+  <table class="w-full text-sm min-w-[520px]">
     <thead class="bg-slate-50 text-slate-500 text-left">
       <tr>
         <th class="px-4 py-2 font-medium">Название</th>

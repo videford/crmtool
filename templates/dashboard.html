@@ -4,22 +4,22 @@
 {% block content %}
 <h1 class="text-2xl font-semibold mb-5">Дашборд</h1>
 
-<div class="grid grid-cols-3 gap-4 mb-6">
+<div class="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
   <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="text-3xl font-semibold">{{ counts.accounts }}</div>
-    <div class="text-sm text-slate-500">Клиентов</div>
+    <div class="text-2xl sm:text-3xl font-semibold">{{ counts.accounts }}</div>
+    <div class="text-xs sm:text-sm text-slate-500">Клиентов</div>
   </div>
   <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="text-3xl font-semibold">{{ counts.meetings }}</div>
-    <div class="text-sm text-slate-500">Предстоящих встреч</div>
+    <div class="text-2xl sm:text-3xl font-semibold">{{ counts.meetings }}</div>
+    <div class="text-xs sm:text-sm text-slate-500">Предстоящих встреч</div>
   </div>
   <div class="bg-white rounded-xl p-4 shadow-sm">
-    <div class="text-3xl font-semibold">{{ counts.open_tasks }}</div>
-    <div class="text-sm text-slate-500">Открытых задач</div>
+    <div class="text-2xl sm:text-3xl font-semibold">{{ counts.open_tasks }}</div>
+    <div class="text-xs sm:text-sm text-slate-500">Открытых задач</div>
   </div>
 </div>
 
-<div class="grid grid-cols-2 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="bg-white rounded-xl p-5 shadow-sm">
     <h2 class="font-semibold mb-3">Ближайшие встречи (7 дней)</h2>
     {% if upcoming %}
