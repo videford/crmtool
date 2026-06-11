@@ -173,6 +173,7 @@ class Meeting(Base):
     )
 
     account: Mapped["Account"] = relationship(back_populates="meetings")
+    owner: Mapped["User | None"] = relationship("User")
 
 
 class Activity(Base):
@@ -209,6 +210,12 @@ class Task(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(32), default="open")
     source: Mapped[str] = mapped_column(String(16), default="manual")  # manual|auto
+    assignee_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    due_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     linear_issue_id: Mapped[str | None] = mapped_column(
         String(64), nullable=True, index=True
     )
@@ -221,6 +228,7 @@ class Task(Base):
     )
 
     account: Mapped["Account"] = relationship(back_populates="tasks")
+    assignee: Mapped["User | None"] = relationship("User")
 
 
 class NotificationLog(Base):

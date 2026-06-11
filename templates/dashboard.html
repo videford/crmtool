@@ -76,7 +76,7 @@
       <li class="py-2 flex justify-between gap-3">
         <div>
           <a href="/accounts/{{ t.account_id }}#tasks" class="font-medium hover:underline">{{ t.title }}</a>
-          <div class="text-sm text-slate-500">{{ t.account.name }}{% if t.linear_url %} · <a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}</div>
+          <div class="text-sm text-slate-500">{{ t.account.name }}{% if t.assignee %} · 👤 {{ t.assignee.name }}{% endif %}{% if t.linear_url %} · <a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}</div>
         </div>
         {{ m.task_badge(t.status) }}
       </li>

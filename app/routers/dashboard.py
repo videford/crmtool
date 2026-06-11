@@ -36,7 +36,7 @@ async def dashboard(
     open_tasks = (
         await session.scalars(
             select(Task)
-            .options(selectinload(Task.account))
+            .options(selectinload(Task.account), selectinload(Task.assignee))
             .where(Task.status.in_(["open", "in_progress"]))
             .order_by(Task.created_at.desc())
             .limit(15)

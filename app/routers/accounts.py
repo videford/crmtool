@@ -5,10 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.db import get_session
-from app.models import Account, Activity, Contact, Deal, User
+from app.models import Account, Activity, Contact, Deal, Meeting, Task, User
 from app.security import require_login, require_role
 from app.services.activities import log_activity
 from app.services.linear import create_task_with_linear
+from app.services.notifications import notify_task_assigned
 from app.templating import render
 from app.timeutil import now_utc, parse_local_dt
 
@@ -27,8 +28,8 @@ async def _get_account(session: AsyncSession, account_id: int) -> Account | None
             selectinload(Account.owner),
             selectinload(Account.contacts),
             selectinload(Account.deals),
-            selectinload(Account.meetings),
-            selectinload(Account.tasks),
+            selectinload(Account.meetings).selectinload(Meeting.owner),
+            selectinload(Account.tasks).selectinload(Task.assignee),
         ],
     )
 
@@ -280,18 +281,23 @@ async def add_task(
     title: str = Form(...),
     description: str = Form(""),
     deal_id: str = Form(""),
+    assignee_id: str = Form(""),
+    due_date: str = Form(""),
     user: User = Depends(require_role("manager")),
     session: AsyncSession = Depends(get_session),
 ):
     account = await session.get(Account, account_id)
     if account is None:
         return RedirectResponse(url="/accounts", status_code=303)
+    aid = int(assignee_id) if assignee_id else None
     task = await create_task_with_linear(
         session,
         account_id=account_id,
         title=title.strip(),
         description=description.strip() or None,
         deal_id=int(deal_id) if deal_id.strip() else None,
+        assignee_id=aid,
+        due_date=parse_local_dt(due_date),
         source="manual",
         account_name=account.name,
     )
@@ -304,4 +310,7 @@ async def add_task(
         payload={"linear_url": task.linear_url} if task.linear_url else None,
     )
     await session.commit()
+    if aid:
+        assignee = await session.get(User, aid)
+        await notify_task_assigned(assignee, task, account.name)
     return RedirectResponse(url=f"/accounts/{account_id}#tasks", status_code=303)

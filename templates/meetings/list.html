@@ -3,17 +3,29 @@
 {% block content %}
 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
   <h1 class="text-2xl font-semibold">Встречи</h1>
-  <div class="text-sm">
-    <a href="/meetings?scope=upcoming" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope!='past' else 'text-slate-600' }}">Предстоящие</a>
-    <a href="/meetings?scope=past" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope=='past' else 'text-slate-600' }}">Прошедшие</a>
+  <div class="flex items-center gap-3 flex-wrap text-sm">
+    <div class="flex gap-1">
+      <a href="/meetings?scope=upcoming{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope!='past' else 'text-slate-600' }}">Предстоящие</a>
+      <a href="/meetings?scope=past{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope=='past' else 'text-slate-600' }}">Прошедшие</a>
+    </div>
+    <div class="flex gap-1">
+      <a href="/meetings?scope={{ scope }}" class="px-3 py-1.5 rounded {{ 'bg-slate-200' if mine!='1' else 'text-slate-600' }}">Все</a>
+      <a href="/meetings?scope={{ scope }}&mine=1" class="px-3 py-1.5 rounded {{ 'bg-slate-200' if mine=='1' else 'text-slate-600' }}">Мои</a>
+    </div>
   </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <div class="lg:col-span-2 bg-white rounded-xl shadow-sm overflow-x-auto">
-    <table class="w-full text-sm min-w-[480px]">
+    <table class="w-full text-sm min-w-[560px]">
       <thead class="bg-slate-50 text-slate-500 text-left">
-        <tr><th class="px-4 py-2 font-medium">Когда</th><th class="px-4 py-2 font-medium">Тема</th><th class="px-4 py-2 font-medium">Клиент</th></tr>
+        <tr>
+          <th class="px-4 py-2 font-medium">Когда</th>
+          <th class="px-4 py-2 font-medium">Тема</th>
+          <th class="px-4 py-2 font-medium">Клиент</th>
+          <th class="px-4 py-2 font-medium">Ответственный</th>
+          <th class="px-4 py-2"></th>
+        </tr>
       </thead>
       <tbody class="divide-y divide-slate-100">
         {% for mt in meetings %}
@@ -21,8 +33,12 @@
           <td class="px-4 py-2 whitespace-nowrap text-slate-600">{{ mt.starts_at | dt }}</td>
           <td class="px-4 py-2 font-medium">{{ mt.title }}</td>
           <td class="px-4 py-2"><a href="/accounts/{{ mt.account_id }}#meetings" class="text-indigo-600 hover:underline">{{ mt.account.name }}</a></td>
+          <td class="px-4 py-2 text-slate-600">{{ mt.owner.name if mt.owner else "—" }}</td>
+          <td class="px-4 py-2 text-right">
+            {% if current_user.role in ['admin','manager'] %}<a href="/meetings/{{ mt.id }}/edit" class="text-slate-400 hover:text-slate-700" title="Изменить">✎</a>{% endif %}
+          </td>
         </tr>
-        {% else %}<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">Встреч нет.</td></tr>{% endfor %}
+        {% else %}<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">Встреч нет.</td></tr>{% endfor %}
       </tbody>
     </table>
   </div>
@@ -41,6 +57,10 @@
       <label class="block text-xs text-slate-500">Конец<input name="ends_at" type="datetime-local" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
       <input name="location" placeholder="Место / ссылка" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
       <input name="participants" placeholder="Участники" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+      <select name="owner_id" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <option value="">Ответственный…</option>
+        {% for u in users %}<option value="{{ u.id }}" {{ 'selected' if u.id==current_user.id }}>{{ u.name }}</option>{% endfor %}
+      </select>
       <button class="w-full bg-slate-900 text-white rounded py-2 text-sm hover:bg-slate-700">Запланировать</button>
     </form>
   </div>

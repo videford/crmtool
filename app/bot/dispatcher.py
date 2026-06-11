@@ -498,6 +498,7 @@ async def fsm_save_task(message: Message, state: FSMContext):
             title=message.text.strip(),
             source="manual",
             account_name=account.name if account else None,
+            assignee_id=user.id if user else None,
         )
         log_activity(
             session,

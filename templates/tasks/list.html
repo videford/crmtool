@@ -4,34 +4,51 @@
 {% block content %}
 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
   <h1 class="text-2xl font-semibold">Задачи</h1>
-  <div class="text-sm">
-    {% for s, label in [('active','Активные'),('done','Выполненные'),('all','Все')] %}
-    <a href="/tasks?status={{ s }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if status==s else 'text-slate-600' }}">{{ label }}</a>
-    {% endfor %}
+  <div class="flex items-center gap-3 flex-wrap">
+    <div class="text-sm flex items-center gap-1">
+      <a href="/tasks?status={{ status }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if mine!='1' else 'text-slate-600' }}">Все</a>
+      <a href="/tasks?status={{ status }}&mine=1" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if mine=='1' else 'text-slate-600' }}">Мои</a>
+    </div>
+    {% if current_user.role in ['admin','manager'] %}
+    <a href="/tasks/new" class="bg-slate-900 text-white text-sm rounded px-4 py-2 hover:bg-slate-700">+ Новая задача</a>
+    {% endif %}
   </div>
 </div>
 
+<div class="text-sm mb-4 flex gap-1">
+  {% for s, label in [('active','Активные'),('done','Выполненные'),('all','Все статусы')] %}
+  <a href="/tasks?status={{ s }}{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-200' if status==s else 'text-slate-600' }}">{{ label }}</a>
+  {% endfor %}
+</div>
+
 <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
-  <table class="w-full text-sm min-w-[640px]">
+  <table class="w-full text-sm min-w-[720px]">
     <thead class="bg-slate-50 text-slate-500 text-left">
       <tr>
         <th class="px-4 py-2 font-medium">Задача</th>
         <th class="px-4 py-2 font-medium">Клиент</th>
-        <th class="px-4 py-2 font-medium">Источник</th>
+        <th class="px-4 py-2 font-medium">Исполнитель</th>
+        <th class="px-4 py-2 font-medium">Срок</th>
         <th class="px-4 py-2 font-medium">Статус</th>
         <th class="px-4 py-2 font-medium">Linear</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-slate-100">
       {% for t in tasks %}
+      {% set overdue = t.due_date and t.due_date < now and t.status in ['open','in_progress'] %}
       <tr class="hover:bg-slate-50">
-        <td class="px-4 py-2 font-medium">{{ t.title }}</td>
+        <td class="px-4 py-2 font-medium">
+          {% if current_user.role in ['admin','manager'] %}<a href="/tasks/{{ t.id }}/edit" class="hover:underline">{{ t.title }}</a>{% else %}{{ t.title }}{% endif %}
+        </td>
         <td class="px-4 py-2"><a href="/accounts/{{ t.account_id }}#tasks" class="text-indigo-600 hover:underline">{{ t.account.name }}</a></td>
-        <td class="px-4 py-2 text-slate-500">{{ t.source }}</td>
+        <td class="px-4 py-2 text-slate-600">{{ t.assignee.name if t.assignee else "—" }}</td>
+        <td class="px-4 py-2 whitespace-nowrap {{ 'text-red-600 font-medium' if overdue else 'text-slate-600' }}">
+          {{ (t.due_date | dt) if t.due_date else "—" }}{{ " ⚠" if overdue }}
+        </td>
         <td class="px-4 py-2">
           {% if current_user.role in ['admin','manager'] %}
           <form method="post" action="/tasks/{{ t.id }}/status">
-            <input type="hidden" name="redirect" value="/tasks?status={{ status }}">
+            <input type="hidden" name="redirect" value="/tasks?status={{ status }}{{ '&mine=1' if mine=='1' }}">
             <select name="status" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
               {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if t.status==s }}>{{ s }}</option>{% endfor %}
             </select>
@@ -40,7 +57,7 @@
         </td>
         <td class="px-4 py-2">{% if t.linear_url %}<a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">↗</a>{% else %}—{% endif %}</td>
       </tr>
-      {% else %}<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">Задач нет.</td></tr>{% endfor %}
+      {% else %}<tr><td colspan="6" class="px-4 py-6 text-center text-slate-400">Задач нет.</td></tr>{% endfor %}
     </tbody>
   </table>
 </div>

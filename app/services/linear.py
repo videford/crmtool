@@ -73,6 +73,8 @@ async def create_task_with_linear(
     deal_id: int | None = None,
     source: str = "manual",
     account_name: str | None = None,
+    assignee_id: int | None = None,
+    due_date=None,
 ) -> Task:
     """Create a local Task and mirror it to Linear when configured."""
     task = Task(
@@ -81,6 +83,8 @@ async def create_task_with_linear(
         title=title,
         description=description,
         source=source,
+        assignee_id=assignee_id,
+        due_date=due_date,
     )
 
     if settings.linear_enabled:

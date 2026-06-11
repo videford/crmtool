@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ "Редактирование задачи" if task else "Новая задача" }} — crmTool{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  {% if task %}
+  <div class="text-sm text-slate-500 mb-2">
+    <a href="/accounts/{{ task.account_id }}#tasks" class="hover:underline">← {{ task.account.name }}</a>
+  </div>
+  {% endif %}
+  <h1 class="text-2xl font-semibold mb-5">{{ "Редактирование задачи" if task else "Новая задача" }}</h1>
+
+  <form method="post" action="{{ '/tasks/' ~ task.id ~ '/edit' if task else '/tasks' }}"
+        class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+
+    {% if task %}
+      <div>
+        <label class="block text-sm text-slate-600 mb-1">Клиент</label>
+        <div class="px-3 py-2 bg-slate-50 rounded text-slate-700">{{ task.account.name }}</div>
+      </div>
+    {% else %}
+      <div>
+        <label class="block text-sm text-slate-600 mb-1">Клиент *</label>
+        <select name="account_id" required class="w-full border border-slate-300 rounded px-3 py-2">
+          <option value="">— выберите клиента —</option>
+          {% for a in accounts %}
+          <option value="{{ a.id }}" {{ 'selected' if preselect_account==a.id }}>{{ a.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+
+    <div>
+      <label class="block text-sm text-slate-600 mb-1">Название *</label>
+      <input name="title" required value="{{ task.title if task else '' }}" class="w-full border border-slate-300 rounded px-3 py-2">
+    </div>
+
+    <div>
+      <label class="block text-sm text-slate-600 mb-1">Описание</label>
+      <textarea name="description" rows="3" class="w-full border border-slate-300 rounded px-3 py-2">{{ task.description or '' if task else '' }}</textarea>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm text-slate-600 mb-1">Исполнитель</label>
+        <select name="assignee_id" class="w-full border border-slate-300 rounded px-3 py-2">
+          <option value="">— не назначен —</option>
+          {% for u in users %}
+          <option value="{{ u.id }}" {{ 'selected' if task and task.assignee_id==u.id }}>{{ u.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-slate-600 mb-1">Срок</label>
+        <input name="due_date" type="datetime-local" value="{{ task.due_date | dtinput if task else '' }}" class="w-full border border-slate-300 rounded px-3 py-2">
+      </div>
+    </div>
+
+    {% if task %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm text-slate-600 mb-1">Статус</label>
+        <select name="status" class="w-full border border-slate-300 rounded px-3 py-2">
+          {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if task.status==s }}>{{ s }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-slate-600 mb-1">Сделка</label>
+        <select name="deal_id" class="w-full border border-slate-300 rounded px-3 py-2">
+          <option value="">— нет —</option>
+          {% for d in deals %}<option value="{{ d.id }}" {{ 'selected' if task.deal_id==d.id }}>{{ d.title }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="flex flex-wrap gap-3">
+      <button class="bg-slate-900 text-white rounded px-5 py-2 hover:bg-slate-700">{{ "Сохранить" if task else "Создать задачу" }}{{ " в Linear" if LINEAR_ENABLED and not task }}</button>
+      <a href="{{ '/accounts/' ~ task.account_id ~ '#tasks' if task else '/tasks' }}" class="px-5 py-2 text-slate-600 hover:underline">Отмена</a>
+    </div>
+  </form>
+
+  {% if task %}
+  <form method="post" action="/tasks/{{ task.id }}/delete" onsubmit="return confirm('Удалить задачу?')" class="mt-3">
+    <button class="text-sm border border-red-200 text-red-600 rounded px-4 py-2 hover:bg-red-50">Удалить задачу</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

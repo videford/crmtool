@@ -113,20 +113,28 @@
       <h2 class="font-semibold mb-3">Задачи {% if LINEAR_ENABLED %}<span class="text-xs text-slate-400 font-normal">(синхр. с Linear)</span>{% endif %}</h2>
       <ul class="divide-y divide-slate-100 mb-3">
         {% for t in tasks %}
+        {% set overdue = t.due_date and t.due_date < now and t.status in ['open','in_progress'] %}
         <li class="py-2 text-sm flex items-center justify-between gap-2">
           <div>
             <div class="font-medium">{{ t.title }}
               {% if t.source=='auto' %}<span class="text-xs text-slate-400">авто</span>{% endif %}
               {% if t.linear_url %} · <a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}
             </div>
+            <div class="text-xs text-slate-500">
+              {{ "👤 " ~ t.assignee.name if t.assignee else "👤 не назначен" }}
+              {% if t.due_date %} · <span class="{{ 'text-red-600 font-medium' if overdue }}">🗓 {{ t.due_date | dt }}{{ " ⚠" if overdue }}</span>{% endif %}
+            </div>
           </div>
           {% if can_edit %}
-          <form method="post" action="/tasks/{{ t.id }}/status" class="flex items-center gap-1">
-            <input type="hidden" name="redirect" value="{{ back }}#tasks">
-            <select name="status" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
-              {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if t.status==s }}>{{ s }}</option>{% endfor %}
-            </select>
-          </form>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <form method="post" action="/tasks/{{ t.id }}/status" class="flex items-center">
+              <input type="hidden" name="redirect" value="{{ back }}#tasks">
+              <select name="status" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
+                {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if t.status==s }}>{{ s }}</option>{% endfor %}
+              </select>
+            </form>
+            <a href="/tasks/{{ t.id }}/edit" class="text-slate-400 hover:text-slate-700 text-xs" title="Изменить">✎</a>
+          </div>
           {% else %}{{ m.task_badge(t.status) }}{% endif %}
         </li>
         {% else %}<li class="py-2 text-sm text-slate-400">Задач нет.</li>{% endfor %}
@@ -135,6 +143,13 @@
       <form method="post" action="/accounts/{{ account.id }}/tasks" class="space-y-2">
         <input name="title" placeholder="Название задачи *" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
         <textarea name="description" rows="2" placeholder="Описание" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></textarea>
+        <div class="grid grid-cols-2 gap-2">
+          <select name="assignee_id" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+            <option value="">Исполнитель…</option>
+            {% for u in users %}<option value="{{ u.id }}">{{ u.name }}</option>{% endfor %}
+          </select>
+          <input name="due_date" type="datetime-local" class="border border-slate-300 rounded px-2 py-1.5 text-sm" title="Срок">
+        </div>
         <button class="w-full bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Создать задачу{{ " в Linear" if LINEAR_ENABLED }}</button>
       </form>
       {% endif %}
@@ -154,12 +169,12 @@
               {% if mt.starts_at >= now %}<span class="text-xs text-green-600">предстоит</span>{% endif %}
             </div>
             <div class="text-slate-500">{{ mt.starts_at | dt }}{% if mt.location %} · {{ mt.location }}{% endif %}</div>
-            {% if mt.participants %}<div class="text-slate-400 text-xs">{{ mt.participants }}</div>{% endif %}
+            <div class="text-slate-400 text-xs">
+              👤 {{ mt.owner.name if mt.owner else "не назначен" }}{% if mt.participants %} · {{ mt.participants }}{% endif %}
+            </div>
           </div>
           {% if can_edit %}
-          <form method="post" action="/meetings/{{ mt.id }}/delete" onsubmit="return confirm('Удалить встречу?')">
-            <button class="text-slate-300 hover:text-red-500 text-xs">✕</button>
-          </form>
+          <a href="/meetings/{{ mt.id }}/edit" class="text-slate-400 hover:text-slate-700 text-xs shrink-0" title="Изменить">✎</a>
           {% endif %}
         </li>
         {% else %}<li class="py-2 text-sm text-slate-400">Встреч нет.</li>{% endfor %}
@@ -175,6 +190,10 @@
         </div>
         <input name="location" placeholder="Место / ссылка на звонок" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
         <input name="participants" placeholder="Участники" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+        <select name="owner_id" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
+          <option value="">Ответственный…</option>
+          {% for u in users %}<option value="{{ u.id }}" {{ 'selected' if u.id==current_user.id }}>{{ u.name }}</option>{% endfor %}
+        </select>
         <button class="w-full bg-slate-100 hover:bg-slate-200 rounded py-1.5 text-sm">+ Запланировать встречу</button>
       </form>
       {% endif %}
