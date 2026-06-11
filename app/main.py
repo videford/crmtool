@@ -6,6 +6,7 @@ from app.config import settings
 from app.routers import (
     accounts,
     auth,
+    contacts,
     dashboard,
     deals,
     linear_webhook,
@@ -44,6 +45,7 @@ async def health():
 app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(accounts.router)
+app.include_router(contacts.router)
 app.include_router(deals.router)
 app.include_router(meetings.router)
 app.include_router(tasks.router)

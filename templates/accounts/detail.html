@@ -41,11 +41,16 @@
       <h2 class="font-semibold mb-3">Контакты</h2>
       <ul class="divide-y divide-slate-100 mb-3">
         {% for c in account.contacts %}
-        <li class="py-2 text-sm">
-          <div class="font-medium">{{ c.name }} {% if c.position %}<span class="text-slate-400 font-normal">· {{ c.position }}</span>{% endif %}</div>
-          <div class="text-slate-500">
-            {{ c.email or "" }}{% if c.phone %} · {{ c.phone }}{% endif %}{% if c.telegram %} · TG {{ c.telegram }}{% endif %}
+        <li class="py-2 text-sm flex items-start justify-between gap-2">
+          <div>
+            <div class="font-medium">{{ c.name }} {% if c.position %}<span class="text-slate-400 font-normal">· {{ c.position }}</span>{% endif %}</div>
+            <div class="text-slate-500">
+              {{ c.email or "" }}{% if c.phone %} · {{ c.phone }}{% endif %}{% if c.telegram %} · TG {{ c.telegram }}{% endif %}
+            </div>
           </div>
+          {% if can_edit %}
+          <a href="/contacts/{{ c.id }}/edit" class="text-slate-400 hover:text-slate-700 text-xs shrink-0" title="Изменить">✎</a>
+          {% endif %}
         </li>
         {% else %}<li class="py-2 text-sm text-slate-400">Контактов нет.</li>{% endfor %}
       </ul>
@@ -76,12 +81,15 @@
             </div>
           </div>
           {% if can_edit %}
-          <form method="post" action="/deals/{{ d.id }}/stage" class="flex items-center gap-1">
-            <input type="hidden" name="redirect" value="{{ back }}#deals">
-            <select name="stage" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
-              {% for s in DEAL_STAGES %}<option value="{{ s }}" {{ 'selected' if d.stage==s }}>{{ s }}</option>{% endfor %}
-            </select>
-          </form>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <form method="post" action="/deals/{{ d.id }}/stage" class="flex items-center">
+              <input type="hidden" name="redirect" value="{{ back }}#deals">
+              <select name="stage" onchange="this.form.submit()" class="border border-slate-300 rounded px-1.5 py-1 text-xs">
+                {% for s in DEAL_STAGES %}<option value="{{ s }}" {{ 'selected' if d.stage==s }}>{{ s }}</option>{% endfor %}
+              </select>
+            </form>
+            <a href="/deals/{{ d.id }}/edit" class="text-slate-400 hover:text-slate-700 text-xs" title="Изменить">✎</a>
+          </div>
           {% else %}{{ m.stage_badge(d.stage) }}{% endif %}
         </li>
         {% else %}<li class="py-2 text-sm text-slate-400">Сделок нет.</li>{% endfor %}

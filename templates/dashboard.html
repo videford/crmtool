@@ -19,6 +19,37 @@
   </div>
 </div>
 
+<div class="bg-white rounded-xl p-5 shadow-sm mb-6">
+  <h2 class="font-semibold mb-4">Воронка в деньгах</h2>
+  <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-5">
+    <div>
+      <div class="text-lg sm:text-2xl font-semibold">{{ "{:,.0f}".format(pipeline.open_value|float) }} ₽</div>
+      <div class="text-xs sm:text-sm text-slate-500">В работе</div>
+    </div>
+    <div>
+      <div class="text-lg sm:text-2xl font-semibold text-indigo-600">{{ "{:,.0f}".format(pipeline.weighted|float) }} ₽</div>
+      <div class="text-xs sm:text-sm text-slate-500">Взвешенный прогноз</div>
+    </div>
+    <div>
+      <div class="text-lg sm:text-2xl font-semibold text-green-600">{{ "{:,.0f}".format(pipeline.won_value|float) }} ₽</div>
+      <div class="text-xs sm:text-sm text-slate-500">Выиграно</div>
+    </div>
+  </div>
+  <div class="space-y-2">
+    {% for s in by_stage %}
+    <div class="flex items-center gap-3 text-sm">
+      <div class="w-24 sm:w-28 shrink-0 capitalize text-slate-600">{{ s.stage }}</div>
+      <div class="flex-1 bg-slate-100 rounded h-5 overflow-hidden">
+        <div class="bg-indigo-400 h-5" style="width: {{ (s.value / max_stage_value * 100) if s.value else 0 }}%"></div>
+      </div>
+      <div class="w-32 sm:w-40 shrink-0 text-right text-slate-600">
+        {{ "{:,.0f}".format(s.value) }} ₽ <span class="text-slate-400">· {{ s.count }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <div class="bg-white rounded-xl p-5 shadow-sm">
     <h2 class="font-semibold mb-3">Ближайшие встречи (7 дней)</h2>

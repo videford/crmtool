@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.db import get_session
-from app.models import Account, Activity, Meeting, Task
+from app.models import DEAL_STAGES, Account, Activity, Deal, Meeting, Task
 from app.security import User, require_login
 from app.templating import render
 from app.timeutil import now_utc
@@ -64,6 +64,44 @@ async def dashboard(
         ),
     }
 
+    open_stages = [s for s in DEAL_STAGES if s not in ("won", "lost")]
+    pipeline = {
+        "open_value": await session.scalar(
+            select(func.coalesce(func.sum(Deal.amount), 0)).where(
+                Deal.stage.in_(open_stages)
+            )
+        ),
+        "weighted": await session.scalar(
+            select(
+                func.coalesce(func.sum(Deal.amount * Deal.probability / 100.0), 0)
+            ).where(Deal.stage.in_(open_stages))
+        ),
+        "won_value": await session.scalar(
+            select(func.coalesce(func.sum(Deal.amount), 0)).where(
+                Deal.stage == "won"
+            )
+        ),
+    }
+
+    stage_rows = (
+        await session.execute(
+            select(
+                Deal.stage,
+                func.count(Deal.id),
+                func.coalesce(func.sum(Deal.amount), 0),
+            )
+            .where(Deal.stage.in_(open_stages))
+            .group_by(Deal.stage)
+        )
+    ).all()
+    by_stage_map = {r[0]: (r[1], float(r[2])) for r in stage_rows}
+    by_stage = [
+        {"stage": s, "count": by_stage_map.get(s, (0, 0))[0],
+         "value": by_stage_map.get(s, (0, 0))[1]}
+        for s in open_stages
+    ]
+    max_stage_value = max([s["value"] for s in by_stage] + [1])
+
     return render(
         request,
         "dashboard.html",
@@ -72,4 +110,7 @@ async def dashboard(
         open_tasks=open_tasks,
         recent=recent,
         counts=counts,
+        pipeline=pipeline,
+        by_stage=by_stage,
+        max_stage_value=max_stage_value,
     )
