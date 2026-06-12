@@ -1,15 +1,18 @@
-# Railway config. Create two services from this repo:
-#   1) web    -> uses startCommand below (default)
-#   2) worker -> override startCommand with: python -m worker.main
-# Add the PostgreSQL plugin; Railway injects DATABASE_URL automatically.
-# NOTE: Railway's DATABASE_URL is postgresql://... ; app.config rewrites it to
-# the asyncpg driver at runtime, so no manual editing is needed.
+# Railway build config, shared by BOTH services deployed from this repo.
+#
+# Deploy as TWO services in one Railway project (+ the PostgreSQL plugin):
+#
+#   1) web    — start command: (none; uses the Dockerfile CMD)
+#               python -m app.init_db && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+#               Healthcheck path: /health   (set in the service dashboard)
+#
+#   2) worker — start command override (set in the service dashboard):
+#               python -m worker.main
+#               No domain, no healthcheck (it has no HTTP server).
+#
+# startCommand / healthcheck are intentionally NOT set here: config-as-code
+# overrides the dashboard, so a shared value would force both services to run
+# the same thing. Per-service start commands are set in the Railway dashboard.
 
 [build]
 builder = "dockerfile"
-
-[deploy]
-startCommand = "python -m app.init_db && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-healthcheckPath = "/health"
-healthcheckTimeout = 100
-restartPolicyType = "on_failure"
