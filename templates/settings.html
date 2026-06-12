@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('set.title') }} — crmTool{% endblock %}
+{% block title %}{{ t('set.title') }} — CRM Tool{% endblock %}
 {% set card = "bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5" %}
 {% set inp = "border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-2 py-1.5 text-sm" %}
 {% block content %}
@@ -12,7 +12,7 @@
       <div class="text-sm space-y-1">
         <div><span class="text-slate-500 dark:text-slate-400">{{ t('auth.name') }}:</span> {{ current_user.name }}</div>
         <div><span class="text-slate-500 dark:text-slate-400">{{ t('auth.email') }}:</span> {{ current_user.email }}</div>
-        <div><span class="text-slate-500 dark:text-slate-400">{{ t('set.role') }}:</span> {{ current_user.role }}</div>
+        <div><span class="text-slate-500 dark:text-slate-400">{{ t('set.role') }}:</span> {{ t('role.' ~ current_user.role) }}</div>
       </div>
     </section>
 
@@ -46,13 +46,19 @@
         <form method="post" action="/settings/telegram/unlink">
           <button class="text-sm border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700">{{ t('set.unlink') }}</button>
         </form>
+      {% elif tg_link %}
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ t('set.link_tg_hint') }}</p>
+        <a href="{{ tg_link }}" target="_blank"
+           class="inline-block text-sm bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-4 py-2 hover:bg-slate-700 dark:hover:bg-white">
+          {{ t('set.link_tg_button') }} →
+        </a>
       {% else %}
         {% if current_user.telegram_link_code %}
         <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ t('set.send_command') }}</p>
         <code class="block bg-slate-100 dark:bg-slate-900 rounded px-3 py-2 text-sm mb-3">/start {{ current_user.telegram_link_code }}</code>
         {% endif %}
         <form method="post" action="/settings/telegram/regenerate">
-          <button class="text-sm bg-slate-900 dark:bg-indigo-600 text-white rounded px-3 py-1.5 hover:bg-slate-700 dark:hover:bg-indigo-500">
+          <button class="text-sm bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-3 py-1.5 hover:bg-slate-700 dark:hover:bg-white">
             {{ t('set.new_code') if current_user.telegram_link_code else t('set.get_code') }}
           </button>
         </form>
@@ -68,17 +74,42 @@
   {% if current_user.role == 'admin' %}
   <section class="{{ card }}">
     <h2 class="font-semibold mb-3">{{ t('set.users') }}</h2>
+    {% set pill = "text-xs border border-slate-300 dark:border-slate-600 rounded px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700" %}
     <ul class="divide-y divide-slate-100 dark:divide-slate-700 mb-4">
       {% for u in users %}
-      <li class="py-2 text-sm flex items-center justify-between">
+      {% set main = is_main_admin(u) %}
+      <li class="py-2 text-sm flex items-center justify-between gap-2 flex-wrap">
         <div>
           <span class="font-medium">{{ u.name }}</span>
-          <span class="text-slate-400">· {{ u.email }} · {{ u.role }}</span>
+          <span class="text-slate-400">· {{ u.email }}</span>
+          <span class="ml-1 px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-xs">{{ t('role.' ~ u.role) }}{% if main %} · {{ t('set.main_admin') }}{% endif %}</span>
         </div>
-        {% if u.id != current_user.id %}
-        <form method="post" action="/settings/users/{{ u.id }}/delete" onsubmit="return confirm('{{ t('set.user_delete_confirm') }}')">
-          <button class="text-slate-300 hover:text-red-500 text-xs">✕</button>
-        </form>
+        {% if not main %}
+        <div class="flex items-center gap-1">
+          {% if u.role == 'guest' %}
+          <form method="post" action="/settings/users/{{ u.id }}/role">
+            <input type="hidden" name="role" value="member">
+            <button class="{{ pill }} text-green-700 dark:text-green-400">{{ t('set.approve') }}</button>
+          </form>
+          {% endif %}
+          {% if u.role == 'member' %}
+          <form method="post" action="/settings/users/{{ u.id }}/role">
+            <input type="hidden" name="role" value="admin">
+            <button class="{{ pill }}">{{ t('set.make_admin') }}</button>
+          </form>
+          {% endif %}
+          {% if u.role == 'admin' and u.id != current_user.id %}
+          <form method="post" action="/settings/users/{{ u.id }}/role">
+            <input type="hidden" name="role" value="member">
+            <button class="{{ pill }}">{{ t('set.make_member') }}</button>
+          </form>
+          {% endif %}
+          {% if u.id != current_user.id %}
+          <form method="post" action="/settings/users/{{ u.id }}/delete" onsubmit="return confirm('{{ t('set.user_delete_confirm') }}')">
+            <button class="text-slate-300 hover:text-red-500 text-base px-1" title="{{ t('common.delete') }}">✕</button>
+          </form>
+          {% endif %}
+        </div>
         {% endif %}
       </li>
       {% endfor %}
@@ -88,7 +119,7 @@
       <input name="email" type="email" placeholder="{{ t('auth.email') }} *" required class="{{ inp }}">
       <input name="password" placeholder="{{ t('auth.password') }} *" required class="{{ inp }}">
       <select name="role" class="{{ inp }}">
-        {% for r in ROLES %}<option value="{{ r }}">{{ r }}</option>{% endfor %}
+        {% for r in ROLES %}<option value="{{ r }}" {{ 'selected' if r=='member' }}>{{ t('role.' ~ r) }}</option>{% endfor %}
       </select>
       <button class="col-span-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded py-1.5 text-sm">+ {{ t('set.add_user') }}</button>
     </form>

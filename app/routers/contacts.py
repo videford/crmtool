@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_session
 from app.models import Contact, User
-from app.security import require_role
+from app.security import require_admin
 from app.templating import render
 
 router = APIRouter(prefix="/contacts")
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/contacts")
 async def edit_contact_form(
     request: Request,
     contact_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     contact = await session.get(Contact, contact_id)
@@ -32,7 +32,7 @@ async def edit_contact(
     email: str = Form(""),
     phone: str = Form(""),
     telegram: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     contact = await session.get(Contact, contact_id)
@@ -52,7 +52,7 @@ async def edit_contact(
 @router.post("/{contact_id}/delete")
 async def delete_contact(
     contact_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     contact = await session.get(Contact, contact_id)

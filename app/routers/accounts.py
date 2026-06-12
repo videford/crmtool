@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from app.db import get_session
 from app.models import Account, Activity, Contact, Deal, Meeting, Task, User
-from app.security import require_login, require_role
+from app.security import require_admin, require_member
 from app.services.activities import log_activity
 from app.services.linear import create_task_with_linear
 from app.services.notifications import notify_task_assigned
@@ -38,7 +38,7 @@ async def _get_account(session: AsyncSession, account_id: int) -> Account | None
 async def list_accounts(
     request: Request,
     q: str = "",
-    user: User = Depends(require_login),
+    user: User = Depends(require_member),
     session: AsyncSession = Depends(get_session),
 ):
     stmt = (
@@ -60,7 +60,7 @@ async def list_accounts(
 @router.get("/new")
 async def new_account_form(
     request: Request,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     users = await _load_users(session)
@@ -78,7 +78,7 @@ async def create_account(
     website: str = Form(""),
     notes: str = Form(""),
     owner_id: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     account = Account(
@@ -106,7 +106,7 @@ async def create_account(
 async def account_detail(
     request: Request,
     account_id: int,
-    user: User = Depends(require_login),
+    user: User = Depends(require_member),
     session: AsyncSession = Depends(get_session),
 ):
     account = await _get_account(session, account_id)
@@ -146,7 +146,7 @@ async def account_detail(
 async def edit_account_form(
     request: Request,
     account_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     account = await session.get(Account, account_id)
@@ -168,7 +168,7 @@ async def edit_account(
     website: str = Form(""),
     notes: str = Form(""),
     owner_id: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     account = await session.get(Account, account_id)
@@ -187,7 +187,7 @@ async def edit_account(
 @router.post("/{account_id}/delete")
 async def delete_account(
     account_id: int,
-    user: User = Depends(require_role("admin")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     account = await session.get(Account, account_id)
@@ -205,7 +205,7 @@ async def add_contact(
     email: str = Form(""),
     phone: str = Form(""),
     telegram: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     session.add(
@@ -227,7 +227,7 @@ async def add_activity(
     account_id: int,
     type: str = Form("note"),
     body: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     log_activity(
@@ -250,7 +250,7 @@ async def add_deal(
     currency: str = Form("RUB"),
     probability: str = Form("0"),
     expected_close: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     deal = Deal(
@@ -283,7 +283,7 @@ async def add_task(
     deal_id: str = Form(""),
     assignee_id: str = Form(""),
     due_date: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     account = await session.get(Account, account_id)

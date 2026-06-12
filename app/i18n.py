@@ -27,7 +27,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     # ---- nav ----
     "nav.dashboard": {"ru": "Дашборд", "uz": "Boshqaruv paneli", "en": "Dashboard"},
     "nav.clients": {"ru": "Клиенты", "uz": "Mijozlar", "en": "Clients"},
-    "nav.pipeline": {"ru": "Воронка", "uz": "Voronka", "en": "Pipeline"},
+    "nav.pipeline": {"ru": "Pipeline", "uz": "Pipeline", "en": "Pipeline"},
     "nav.meetings": {"ru": "Встречи", "uz": "Uchrashuvlar", "en": "Meetings"},
     "nav.tasks": {"ru": "Задачи", "uz": "Vazifalar", "en": "Tasks"},
     "nav.settings": {"ru": "Настройки", "uz": "Sozlamalar", "en": "Settings"},
@@ -115,7 +115,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "deal.edit": {"ru": "Редактирование сделки", "uz": "Bitimni tahrirlash", "en": "Edit deal"},
     "deal.delete": {"ru": "Удалить сделку", "uz": "Bitimni o‘chirish", "en": "Delete deal"},
     "deal.delete_confirm": {"ru": "Удалить сделку?", "uz": "Bitim o‘chirilsinmi?", "en": "Delete deal?"},
-    "deal.pipeline_title": {"ru": "Воронка продаж", "uz": "Savdo voronkasi", "en": "Sales pipeline"},
+    "deal.pipeline_title": {"ru": "Pipeline", "uz": "Pipeline", "en": "Pipeline"},
     "deal.in_work_total": {"ru": "В работе", "uz": "Ishda", "en": "In progress"},
     "deal.owner": {"ru": "Ответственный", "uz": "Mas’ul", "en": "Owner"},
     # ---- tasks ----
@@ -188,7 +188,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "bot.menu_clients": {"ru": "📇 Клиенты", "uz": "📇 Mijozlar", "en": "📇 Clients"},
     "bot.menu_meetings": {"ru": "📅 Встречи", "uz": "📅 Uchrashuvlar", "en": "📅 Meetings"},
     "bot.menu_tasks": {"ru": "✅ Задачи", "uz": "✅ Vazifalar", "en": "✅ Tasks"},
-    "bot.menu_pipeline": {"ru": "📊 Воронка", "uz": "📊 Voronka", "en": "📊 Pipeline"},
+    "bot.menu_pipeline": {"ru": "📊 Pipeline", "uz": "📊 Pipeline", "en": "📊 Pipeline"},
     "bot.not_linked": {"ru": "Вы не подключены. Откройте «Настройки» в CRM, получите код и отправьте сюда: /start &lt;код&gt;", "uz": "Siz ulanmagansiz. CRM’dagi «Sozlamalar»ni oching, kod oling va bu yerga yuboring: /start &lt;kod&gt;", "en": "You're not linked. Open Settings in the CRM, get a code and send it here: /start &lt;code&gt;"},
     "bot.already_linked": {"ru": "Вы уже подключены как {name}.", "uz": "Siz allaqachon {name} sifatida ulangansiz.", "en": "You're already linked as {name}."},
     "bot.link_hint": {"ru": "Привет! Чтобы подключить уведомления, откройте «Настройки» в CRM, получите код и отправьте сюда:\n/start &lt;код&gt;", "uz": "Salom! Bildirishnomalarni ulash uchun CRM’dagi «Sozlamalar»ni oching, kod oling va yuboring:\n/start &lt;kod&gt;", "en": "Hi! To enable notifications, open Settings in the CRM, get a code and send it here:\n/start &lt;code&gt;"},
@@ -204,7 +204,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "bot.no_clients": {"ru": "Клиентов нет.", "uz": "Mijozlar yo‘q.", "en": "No clients."},
     "bot.open_tasks": {"ru": "Открытые задачи", "uz": "Ochiq vazifalar", "en": "Open tasks"},
     "bot.no_tasks": {"ru": "Открытых задач нет.", "uz": "Ochiq vazifalar yo‘q.", "en": "No open tasks."},
-    "bot.pipeline": {"ru": "Воронка (активные сделки)", "uz": "Voronka (faol bitimlar)", "en": "Pipeline (active deals)"},
+    "bot.pipeline": {"ru": "Pipeline (активные сделки)", "uz": "Pipeline (faol bitimlar)", "en": "Pipeline (active deals)"},
     "bot.total_in_work": {"ru": "Итого в работе", "uz": "Jami ishda", "en": "Total in progress"},
     "bot.deals": {"ru": "Сделки", "uz": "Bitimlar", "en": "Deals"},
     "bot.open_in_crm": {"ru": "🌐 Открыть в CRM", "uz": "🌐 CRM’da ochish", "en": "🌐 Open in CRM"},
@@ -246,6 +246,27 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "bot.client_not_found": {"ru": "Клиент не найден", "uz": "Mijoz topilmadi", "en": "Client not found"},
     "bot.no_active_deals": {"ru": "Активных сделок нет.", "uz": "Faol bitimlar yo‘q.", "en": "No active deals."},
     "bot.tasks_done_zero": {"ru": "Открытых задач нет 🎉", "uz": "Ochiq vazifalar yo‘q 🎉", "en": "No open tasks 🎉"},
+    "bot.register_prompt": {
+        "ru": "Похоже, у вас ещё нет аккаунта. Зарегистрируйтесь на сайте, затем вернитесь сюда для привязки:\n{url}/register",
+        "uz": "Sizda hali hisob yo‘qga o‘xshaydi. Saytda ro‘yxatdan o‘ting, so‘ng ulash uchun qayting:\n{url}/register",
+        "en": "Looks like you don't have an account yet. Register on the site, then come back here to link:\n{url}/register",
+    },
+    "bot.open_site": {"ru": "🌐 Открыть сайт", "uz": "🌐 Saytni ochish", "en": "🌐 Open site"},
+    # ---- roles ----
+    "role.guest": {"ru": "Гость", "uz": "Mehmon", "en": "Guest"},
+    "role.member": {"ru": "Участник", "uz": "Ishtirokchi", "en": "Member"},
+    "role.admin": {"ru": "Админ", "uz": "Admin", "en": "Admin"},
+    # ---- pending approval ----
+    "pending.title": {"ru": "Ожидает подтверждения", "uz": "Tasdiqlash kutilmoqda", "en": "Awaiting approval"},
+    "pending.text": {"ru": "Ваш аккаунт создан и ждёт подтверждения администратором. После одобрения вы получите доступ к задачам и встречам.", "uz": "Hisobingiz yaratildi va administrator tasdiqini kutmoqda. Tasdiqlangach, vazifalar va uchrashuvlarga kirish ochiladi.", "en": "Your account is created and awaiting an admin's approval. Once approved, you'll get access to tasks and meetings."},
+    # ---- settings: roles & telegram link ----
+    "set.role_member": {"ru": "Роль", "uz": "Rol", "en": "Role"},
+    "set.approve": {"ru": "Подтвердить", "uz": "Tasdiqlash", "en": "Approve"},
+    "set.make_admin": {"ru": "Сделать админом", "uz": "Admin qilish", "en": "Make admin"},
+    "set.make_member": {"ru": "Сделать участником", "uz": "Ishtirokchi qilish", "en": "Make member"},
+    "set.main_admin": {"ru": "главный", "uz": "asosiy", "en": "main"},
+    "set.link_tg_button": {"ru": "Привязать Telegram", "uz": "Telegram’ni ulash", "en": "Link Telegram"},
+    "set.link_tg_hint": {"ru": "Нажмите кнопку — откроется бот и привяжет аккаунт автоматически.", "uz": "Tugmani bosing — bot ochiladi va hisobni avtomatik ulaydi.", "en": "Tap the button — the bot opens and links your account automatically."},
 }
 
 

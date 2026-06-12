@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 
 from app.db import get_session
 from app.models import Account, Meeting, User
-from app.security import require_login, require_role
+from app.security import require_admin, require_member
 from app.services.activities import log_activity
 from app.services.notifications import notify_meeting_assigned
 from app.templating import render
@@ -26,7 +26,7 @@ async def meetings_list(
     request: Request,
     scope: str = "upcoming",
     mine: str = "",
-    user: User = Depends(require_login),
+    user: User = Depends(require_member),
     session: AsyncSession = Depends(get_session),
 ):
     now = now_utc()
@@ -70,7 +70,7 @@ async def create_meeting(
     deal_id: str = Form(""),
     owner_id: str = Form(""),
     redirect: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     starts = parse_local_dt(starts_at)
@@ -112,7 +112,7 @@ async def create_meeting(
 async def edit_meeting_form(
     request: Request,
     meeting_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     meeting = await session.get(
@@ -138,7 +138,7 @@ async def edit_meeting(
     location: str = Form(""),
     participants: str = Form(""),
     owner_id: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     meeting = await session.get(Meeting, meeting_id)
@@ -173,7 +173,7 @@ async def edit_meeting(
 @router.post("/{meeting_id}/delete")
 async def delete_meeting(
     meeting_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     meeting = await session.get(Meeting, meeting_id)

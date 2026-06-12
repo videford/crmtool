@@ -72,10 +72,26 @@ async def _lang(session, chat_id: str) -> str:
     return normalize_lang(user.language) if user else "ru"
 
 
+def _site_kb(lang: str):
+    kb = InlineKeyboardBuilder()
+    kb.button(text=_t(lang, "bot.open_site"), url=settings.base_url or "https://example.com")
+    return kb.as_markup()
+
+
+async def _ask_to_register(message: Message) -> None:
+    lang = tg_lang(message)
+    text = (
+        _t(lang, "bot.not_linked")
+        + "\n\n"
+        + _t(lang, "bot.register_prompt", url=settings.base_url)
+    )
+    await message.answer(text, reply_markup=_site_kb(lang))
+
+
 async def require_user(message: Message, session) -> User | None:
     user = await _user(session, str(message.chat.id))
     if user is None:
-        await message.answer(_t(tg_lang(message), "bot.not_linked"))
+        await _ask_to_register(message)
     return user
 
 
@@ -103,7 +119,13 @@ async def cmd_start(message: Message, command: CommandObject):
             )
             return
         if not code:
-            await message.answer(_t(tg_lang(message), "bot.link_hint"))
+            lang = tg_lang(message)
+            await message.answer(
+                _t(lang, "bot.link_hint")
+                + "\n\n"
+                + _t(lang, "bot.register_prompt", url=settings.base_url),
+                reply_markup=_site_kb(lang),
+            )
             return
         user = await session.scalar(
             select(User).where(User.telegram_link_code == code)

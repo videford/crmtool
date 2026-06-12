@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% import "_macros.html" as m %}
-{% block title %}{{ t('dash.title') }} — crmTool{% endblock %}
+{% block title %}{{ t('dash.title') }} — CRM Tool{% endblock %}
 {% block content %}
 <h1 class="text-2xl font-semibold mb-5">{{ t('dash.title') }}</h1>
 
@@ -27,7 +27,7 @@
       <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.in_work') }}</div>
     </div>
     <div>
-      <div class="text-lg sm:text-2xl font-semibold text-indigo-600 dark:text-indigo-400">{{ "{:,.0f}".format(pipeline.weighted|float) }} ₽</div>
+      <div class="text-lg sm:text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ "{:,.0f}".format(pipeline.weighted|float) }} ₽</div>
       <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.weighted') }}</div>
     </div>
     <div>
@@ -40,7 +40,7 @@
     <div class="flex items-center gap-3 text-sm">
       <div class="w-24 sm:w-28 shrink-0 capitalize text-slate-600 dark:text-slate-300">{{ s.stage }}</div>
       <div class="flex-1 bg-slate-100 dark:bg-slate-700 rounded h-5 overflow-hidden">
-        <div class="bg-indigo-400 h-5" style="width: {{ (s.value / max_stage_value * 100) if s.value else 0 }}%"></div>
+        <div class="bg-slate-700 dark:bg-slate-300 h-5" style="width: {{ (s.value / max_stage_value * 100) if s.value else 0 }}%"></div>
       </div>
       <div class="w-32 sm:w-40 shrink-0 text-right text-slate-600 dark:text-slate-300">
         {{ "{:,.0f}".format(s.value) }} ₽ <span class="text-slate-400">· {{ s.count }}</span>
@@ -76,7 +76,7 @@
       <li class="py-2 flex justify-between gap-3">
         <div>
           <a href="/accounts/{{ t_.account_id }}#tasks" class="font-medium hover:underline">{{ t_.title }}</a>
-          <div class="text-sm text-slate-500 dark:text-slate-400">{{ t_.account.name }}{% if t_.assignee %} · 👤 {{ t_.assignee.name }}{% endif %}{% if t_.linear_url %} · <a href="{{ t_.linear_url }}" target="_blank" class="text-indigo-600 dark:text-indigo-400">Linear ↗</a>{% endif %}</div>
+          <div class="text-sm text-slate-500 dark:text-slate-400">{{ t_.account.name }}{% if t_.assignee %} · 👤 {{ t_.assignee.name }}{% endif %}{% if t_.linear_url %} · <a href="{{ t_.linear_url }}" target="_blank" class="text-slate-900 dark:text-slate-100">Linear ↗</a>{% endif %}</div>
         </div>
         {{ m.task_badge(t_.status) }}
       </li>

@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from app.db import get_session
 from app.models import TASK_STATUSES, Account, Deal, Task, User
-from app.security import require_login, require_role
+from app.security import require_admin, require_member
 from app.services.activities import log_activity
 from app.services.linear import create_task_with_linear
 from app.services.notifications import notify_task_assigned
@@ -25,7 +25,7 @@ async def tasks_list(
     request: Request,
     status: str = "active",
     mine: str = "",
-    user: User = Depends(require_login),
+    user: User = Depends(require_member),
     session: AsyncSession = Depends(get_session),
 ):
     stmt = (
@@ -55,7 +55,7 @@ async def tasks_list(
 async def new_task_form(
     request: Request,
     account_id: int | None = None,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     accounts = (
@@ -81,7 +81,7 @@ async def create_task(
     description: str = Form(""),
     assignee_id: str = Form(""),
     due_date: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     account = await session.get(Account, account_id)
@@ -117,7 +117,7 @@ async def create_task(
 async def edit_task_form(
     request: Request,
     task_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     task = await session.get(
@@ -152,7 +152,7 @@ async def edit_task(
     assignee_id: str = Form(""),
     deal_id: str = Form(""),
     due_date: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     task = await session.get(
@@ -182,7 +182,7 @@ async def update_status(
     task_id: int,
     status: str = Form(...),
     redirect: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     task = await session.get(Task, task_id)
@@ -198,7 +198,7 @@ async def update_status(
 async def delete_task(
     task_id: int,
     redirect: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     task = await session.get(Task, task_id)

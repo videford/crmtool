@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('client.edit') if account else t('client.new_title') }} — crmTool{% endblock %}
+{% block title %}{{ t('client.edit') if account else t('client.new_title') }} — CRM Tool{% endblock %}
 {% block content %}
 <div class="max-w-2xl">
   <h1 class="text-2xl font-semibold mb-5">{{ t('client.edit') if account else t('client.new_title') }}</h1>
@@ -43,7 +43,7 @@
       <textarea name="notes" rows="4" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">{{ account.notes or '' if account else '' }}</textarea>
     </div>
     <div class="flex gap-3">
-      <button class="bg-slate-900 dark:bg-indigo-600 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-indigo-500">{{ t('common.save') }}</button>
+      <button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-white">{{ t('common.save') }}</button>
       <a href="{{ '/accounts/' ~ account.id if account else '/accounts' }}" class="px-5 py-2 text-slate-600 dark:text-slate-300 hover:underline">{{ t('common.cancel') }}</a>
     </div>
   </form>

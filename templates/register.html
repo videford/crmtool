@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}{{ t('auth.register_title') }} — crmTool{% endblock %}
+{% block title %}{{ t('auth.register_title') }} — CRM Tool{% endblock %}
 {% block guest %}
 <div class="min-h-screen flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-950 px-4">
   <div class="w-full max-w-sm">
     <div class="flex items-center justify-between mb-3">
-      <div class="text-2xl font-semibold text-slate-800 dark:text-slate-100">crmTool</div>
+      <div class="text-2xl font-semibold text-slate-800 dark:text-slate-100">CRM Tool</div>
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-1 text-xs">
           {% for code in LANGUAGES %}
@@ -37,7 +37,7 @@
       </div>
       <button class="w-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded py-2 hover:bg-slate-700 dark:hover:bg-white">{{ t('auth.create_account') }}</button>
       <div class="text-center text-sm text-slate-500 dark:text-slate-400">
-        {{ t('auth.have_account') }} <a href="/login" class="text-indigo-600 dark:text-indigo-400 hover:underline">{{ t('auth.login_link') }}</a>
+        {{ t('auth.have_account') }} <a href="/login" class="text-slate-900 dark:text-slate-100 hover:underline">{{ t('auth.login_link') }}</a>
       </div>
     </form>
   </div>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('nav.pipeline') }} — crmTool{% endblock %}
+{% block title %}{{ t('nav.pipeline') }} — CRM Tool{% endblock %}
 {% block content %}
 <div class="flex items-baseline justify-between flex-wrap gap-2 mb-5">
   <h1 class="text-2xl font-semibold">{{ t('deal.pipeline_title') }}</h1>
@@ -20,13 +20,13 @@
       <div class="bg-white dark:bg-slate-700 rounded-lg p-3 shadow-sm">
         <div class="flex items-start justify-between gap-1">
           <a href="/accounts/{{ d.account_id }}#deals" class="font-medium text-sm hover:underline">{{ d.title }}</a>
-          {% if current_user.role in ['admin','manager'] %}
+          {% if current_user.role == 'admin' %}
           <a href="/deals/{{ d.id }}/edit" class="text-slate-300 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs shrink-0" title="{{ t('common.edit') }}">✎</a>
           {% endif %}
         </div>
         <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ d.account.name }}</div>
         {% if d.amount %}<div class="text-xs text-slate-700 dark:text-slate-200 mt-1">{{ "{:,.0f}".format(d.amount) }} {{ d.currency }}{% if d.probability %} · {{ d.probability }}%{% endif %}</div>{% endif %}
-        {% if current_user.role in ['admin','manager'] %}
+        {% if current_user.role == 'admin' %}
         <form method="post" action="/deals/{{ d.id }}/stage" class="mt-2">
           <input type="hidden" name="redirect" value="/deals">
           <select name="stage" onchange="this.form.submit()" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-1 py-1 text-xs">

@@ -15,7 +15,7 @@ from app.routers import (
     settings_routes,
     tasks,
 )
-from app.security import NotAuthenticated, NotAuthorized
+from app.security import NotAuthenticated, NotAuthorized, PendingApproval
 from app.templating import render
 
 app = FastAPI(title="crmTool")
@@ -36,6 +36,11 @@ async def _not_authenticated(request: Request, exc: NotAuthenticated):
 @app.exception_handler(NotAuthorized)
 async def _not_authorized(request: Request, exc: NotAuthorized):
     return render(request, "403.html", status_code=403)
+
+
+@app.exception_handler(PendingApproval)
+async def _pending(request: Request, exc: PendingApproval):
+    return RedirectResponse(url="/pending", status_code=303)
 
 
 @app.get("/health")

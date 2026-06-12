@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('meet.h') }} — crmTool{% endblock %}
+{% block title %}{{ t('meet.h') }} — CRM Tool{% endblock %}
 {% set inp = "w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-2 py-1.5 text-sm" %}
 {% block content %}
 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
@@ -33,10 +33,10 @@
         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">
           <td class="px-4 py-2 whitespace-nowrap text-slate-600 dark:text-slate-300">{{ mt.starts_at | dt }}</td>
           <td class="px-4 py-2 font-medium">{{ mt.title }}</td>
-          <td class="px-4 py-2"><a href="/accounts/{{ mt.account_id }}#meetings" class="text-indigo-600 dark:text-indigo-400 hover:underline">{{ mt.account.name }}</a></td>
+          <td class="px-4 py-2"><a href="/accounts/{{ mt.account_id }}#meetings" class="text-slate-900 dark:text-slate-100 hover:underline">{{ mt.account.name }}</a></td>
           <td class="px-4 py-2 text-slate-600 dark:text-slate-300">{{ mt.owner.name if mt.owner else "—" }}</td>
           <td class="px-4 py-2 text-right">
-            {% if current_user.role in ['admin','manager'] %}<a href="/meetings/{{ mt.id }}/edit" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" title="{{ t('common.edit') }}">✎</a>{% endif %}
+            {% if current_user.role == 'admin' %}<a href="/meetings/{{ mt.id }}/edit" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" title="{{ t('common.edit') }}">✎</a>{% endif %}
           </td>
         </tr>
         {% else %}<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">{{ t('meet.none') }}</td></tr>{% endfor %}
@@ -44,7 +44,7 @@
     </table>
   </div>
 
-  {% if current_user.role in ['admin','manager'] %}
+  {% if current_user.role == 'admin' %}
   <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
     <h2 class="font-semibold mb-3">{{ t('meet.new') }}</h2>
     <form method="post" action="/meetings" class="space-y-2">
@@ -55,14 +55,13 @@
       </select>
       <input name="title" placeholder="{{ t('meet.topic') }} *" required class="{{ inp }}">
       <label class="block text-xs text-slate-500 dark:text-slate-400">{{ t('meet.start') }} *<input name="starts_at" type="datetime-local" required class="{{ inp }}"></label>
-      <label class="block text-xs text-slate-500 dark:text-slate-400">{{ t('meet.end') }}<input name="ends_at" type="datetime-local" class="{{ inp }}"></label>
       <input name="location" placeholder="{{ t('meet.location') }}" class="{{ inp }}">
       <input name="participants" placeholder="{{ t('meet.participants') }}" class="{{ inp }}">
       <select name="owner_id" class="{{ inp }}">
         <option value="">{{ t('meet.responsible') }}…</option>
         {% for u in users %}<option value="{{ u.id }}" {{ 'selected' if u.id==current_user.id }}>{{ u.name }}</option>{% endfor %}
       </select>
-      <button class="w-full bg-slate-900 dark:bg-indigo-600 text-white rounded py-2 text-sm hover:bg-slate-700 dark:hover:bg-indigo-500">{{ t('meet.schedule') }}</button>
+      <button class="w-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded py-2 text-sm hover:bg-slate-700 dark:hover:bg-white">{{ t('meet.schedule') }}</button>
     </form>
   </div>
   {% endif %}
