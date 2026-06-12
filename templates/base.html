@@ -1,16 +1,35 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}crmTool{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+    (function () {
+      try { if (localStorage.theme === 'dark') document.documentElement.classList.add('dark'); }
+      catch (e) {}
+    })();
+    function toggleTheme() {
+      var d = document.documentElement.classList.toggle('dark');
+      try { localStorage.theme = d ? 'dark' : 'light'; } catch (e) {}
+    }
+  </script>
   <script src="https://unpkg.com/htmx.org@2.0.4"></script>
   <style>
     body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen">
+{% macro lang_switch(extra) %}
+  <div class="flex items-center gap-1 text-xs {{ extra }}">
+    {% for code in LANGUAGES %}
+    <a href="/set-language?lang={{ code }}&next={{ request.url.path }}"
+       class="px-1.5 py-0.5 rounded uppercase {{ 'bg-slate-700 text-white' if lang==code else 'text-slate-400 hover:text-white' }}">{{ code }}</a>
+    {% endfor %}
+  </div>
+{% endmacro %}
 {% if current_user %}
 <script>
   function openDrawer(){document.getElementById('drawer').classList.remove('-translate-x-full');document.getElementById('backdrop').classList.remove('hidden');}
@@ -19,12 +38,12 @@
 
 <!-- Mobile top bar -->
 <header class="md:hidden sticky top-0 z-30 flex items-center gap-3 bg-slate-900 text-white px-4 h-14">
-  <button onclick="openDrawer()" aria-label="Меню" class="text-2xl leading-none">&#9776;</button>
+  <button onclick="openDrawer()" aria-label="Menu" class="text-2xl leading-none">&#9776;</button>
   <span class="font-semibold">crmTool</span>
+  <button onclick="toggleTheme()" class="ml-auto text-lg" aria-label="Theme">🌓</button>
 </header>
 
 <div class="md:flex md:min-h-screen">
-  <!-- Backdrop (mobile only) -->
   <div id="backdrop" onclick="closeDrawer()" class="hidden fixed inset-0 bg-black/40 z-30 md:hidden"></div>
 
   <aside id="drawer"
@@ -32,19 +51,25 @@
                 flex flex-col shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200">
     <div class="px-5 py-4 text-lg font-semibold border-b border-slate-700 flex items-center justify-between">
       <span>crmTool</span>
-      <button onclick="closeDrawer()" class="md:hidden text-xl" aria-label="Закрыть">&times;</button>
+      <button onclick="closeDrawer()" class="md:hidden text-xl" aria-label="Close">&times;</button>
     </div>
     <nav class="flex-1 px-2 py-3 space-y-1 text-sm overflow-y-auto">
-      {% set nav = [('/', 'Дашборд'), ('/accounts', 'Клиенты'), ('/deals', 'Воронка'), ('/meetings', 'Встречи'), ('/tasks', 'Задачи'), ('/settings', 'Настройки')] %}
+      {% set nav = [('/', t('nav.dashboard')), ('/accounts', t('nav.clients')), ('/deals', t('nav.pipeline')), ('/meetings', t('nav.meetings')), ('/tasks', t('nav.tasks')), ('/settings', t('nav.settings'))] %}
       {% for href, label in nav %}
       <a href="{{ href }}" class="block px-3 py-2.5 rounded hover:bg-slate-700
         {% if request.url.path == href or (href != '/' and request.url.path.startswith(href)) %}bg-slate-700 font-medium{% endif %}">{{ label }}</a>
       {% endfor %}
     </nav>
-    <div class="px-4 py-3 border-t border-slate-700 text-xs">
-      <div class="font-medium text-slate-100">{{ current_user.name }}</div>
-      <div class="text-slate-400">{{ current_user.role }}</div>
-      <a href="/logout" class="inline-block mt-2 text-slate-300 hover:text-white">Выйти →</a>
+    <div class="px-4 py-3 border-t border-slate-700 text-xs space-y-2">
+      <div class="flex items-center justify-between">
+        {{ lang_switch('') }}
+        <button onclick="toggleTheme()" class="text-base" aria-label="Theme" title="{{ t('common.theme') }}">🌓</button>
+      </div>
+      <div>
+        <div class="font-medium text-slate-100">{{ current_user.name }}</div>
+        <div class="text-slate-400">{{ current_user.role }}</div>
+        <a href="/logout" class="inline-block mt-1 text-slate-300 hover:text-white">{{ t('nav.logout') }} →</a>
+      </div>
     </div>
   </aside>
 

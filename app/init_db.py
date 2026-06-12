@@ -22,7 +22,15 @@ from app.security import hash_password
 _COLUMN_PATCHES = [
     "ALTER TABLE tasks ADD COLUMN IF NOT EXISTS assignee_id INTEGER REFERENCES users(id)",
     "ALTER TABLE tasks ADD COLUMN IF NOT EXISTS due_date TIMESTAMPTZ",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS language VARCHAR(8) DEFAULT 'ru'",
 ]
+
+
+async def ensure_columns() -> None:
+    """Apply additive column patches. Safe to run from any service, anytime."""
+    async with engine.begin() as conn:
+        for stmt in _COLUMN_PATCHES:
+            await conn.execute(text(stmt))
 
 
 async def init() -> None:

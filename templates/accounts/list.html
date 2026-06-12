@@ -1,36 +1,36 @@
 {% extends "base.html" %}
-{% block title %}Клиенты — crmTool{% endblock %}
+{% block title %}{{ t('client.title') }} — crmTool{% endblock %}
 {% block content %}
 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
-  <h1 class="text-2xl font-semibold">Клиенты</h1>
-  <a href="/accounts/new" class="bg-slate-900 text-white text-sm rounded px-4 py-2 hover:bg-slate-700">+ Новый клиент</a>
+  <h1 class="text-2xl font-semibold">{{ t('client.title') }}</h1>
+  <a href="/accounts/new" class="bg-slate-900 dark:bg-indigo-600 text-white text-sm rounded px-4 py-2 hover:bg-slate-700 dark:hover:bg-indigo-500">+ {{ t('client.new') }}</a>
 </div>
 
 <form method="get" action="/accounts" class="mb-4">
-  <input name="q" value="{{ q }}" placeholder="Поиск по названию или отрасли…"
-         class="w-full max-w-md border border-slate-300 rounded px-3 py-2 text-sm">
+  <input name="q" value="{{ q }}" placeholder="{{ t('client.search') }}"
+         class="w-full max-w-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 rounded px-3 py-2 text-sm">
 </form>
 
-<div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-x-auto">
   <table class="w-full text-sm min-w-[520px]">
-    <thead class="bg-slate-50 text-slate-500 text-left">
+    <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-left">
       <tr>
-        <th class="px-4 py-2 font-medium">Название</th>
-        <th class="px-4 py-2 font-medium">Тип</th>
-        <th class="px-4 py-2 font-medium">Отрасль</th>
-        <th class="px-4 py-2 font-medium">Ответственный</th>
+        <th class="px-4 py-2 font-medium">{{ t('client.name') }}</th>
+        <th class="px-4 py-2 font-medium">{{ t('client.type') }}</th>
+        <th class="px-4 py-2 font-medium">{{ t('client.industry') }}</th>
+        <th class="px-4 py-2 font-medium">{{ t('client.owner') }}</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-100">
+    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
       {% for a in accounts %}
-      <tr class="hover:bg-slate-50">
-        <td class="px-4 py-2"><a href="/accounts/{{ a.id }}" class="font-medium text-slate-800 hover:underline">{{ a.name }}</a></td>
-        <td class="px-4 py-2 text-slate-600">{{ "Банк" if a.type == "bank" else "Компания" }}</td>
-        <td class="px-4 py-2 text-slate-600">{{ a.industry or "—" }}</td>
-        <td class="px-4 py-2 text-slate-600">{{ a.owner.name if a.owner else "—" }}</td>
+      <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+        <td class="px-4 py-2"><a href="/accounts/{{ a.id }}" class="font-medium hover:underline">{{ a.name }}</a></td>
+        <td class="px-4 py-2 text-slate-600 dark:text-slate-300">{{ t('client.bank') if a.type == "bank" else t('client.company') }}</td>
+        <td class="px-4 py-2 text-slate-600 dark:text-slate-300">{{ a.industry or "—" }}</td>
+        <td class="px-4 py-2 text-slate-600 dark:text-slate-300">{{ a.owner.name if a.owner else "—" }}</td>
       </tr>
       {% else %}
-      <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">Клиентов пока нет.</td></tr>
+      <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">{{ t('client.none') }}</td></tr>
       {% endfor %}
     </tbody>
   </table>
