@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     admin_password: str = "admin123"
     admin_name: str = "Admin"
 
+    # Self-registration
+    allow_registration: bool = True
+    default_role: str = "manager"  # role assigned to self-registered users
+
     # Telegram
     telegram_bot_token: str = ""
     reminder_offsets: str = "1440,60,15"

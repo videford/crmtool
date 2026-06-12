@@ -55,6 +55,7 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     telegram_chat_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     telegram_link_code: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    language: Mapped[str] = mapped_column(String(8), default="ru")
     notify_activities: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(

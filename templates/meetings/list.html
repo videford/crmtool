@@ -1,67 +1,68 @@
 {% extends "base.html" %}
-{% block title %}Встречи — crmTool{% endblock %}
+{% block title %}{{ t('meet.h') }} — crmTool{% endblock %}
+{% set inp = "w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-2 py-1.5 text-sm" %}
 {% block content %}
 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
-  <h1 class="text-2xl font-semibold">Встречи</h1>
+  <h1 class="text-2xl font-semibold">{{ t('meet.h') }}</h1>
   <div class="flex items-center gap-3 flex-wrap text-sm">
     <div class="flex gap-1">
-      <a href="/meetings?scope=upcoming{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope!='past' else 'text-slate-600' }}">Предстоящие</a>
-      <a href="/meetings?scope=past{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope=='past' else 'text-slate-600' }}">Прошедшие</a>
+      <a href="/meetings?scope=upcoming{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope!='past' else 'text-slate-600 dark:text-slate-300' }}">{{ t('meet.upcoming') }}</a>
+      <a href="/meetings?scope=past{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if scope=='past' else 'text-slate-600 dark:text-slate-300' }}">{{ t('meet.past') }}</a>
     </div>
     <div class="flex gap-1">
-      <a href="/meetings?scope={{ scope }}" class="px-3 py-1.5 rounded {{ 'bg-slate-200' if mine!='1' else 'text-slate-600' }}">Все</a>
-      <a href="/meetings?scope={{ scope }}&mine=1" class="px-3 py-1.5 rounded {{ 'bg-slate-200' if mine=='1' else 'text-slate-600' }}">Мои</a>
+      <a href="/meetings?scope={{ scope }}" class="px-3 py-1.5 rounded {{ 'bg-slate-200 dark:bg-slate-700' if mine!='1' else 'text-slate-600 dark:text-slate-300' }}">{{ t('common.all') }}</a>
+      <a href="/meetings?scope={{ scope }}&mine=1" class="px-3 py-1.5 rounded {{ 'bg-slate-200 dark:bg-slate-700' if mine=='1' else 'text-slate-600 dark:text-slate-300' }}">{{ t('common.mine') }}</a>
     </div>
   </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <div class="lg:col-span-2 bg-white rounded-xl shadow-sm overflow-x-auto">
+  <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-x-auto">
     <table class="w-full text-sm min-w-[560px]">
-      <thead class="bg-slate-50 text-slate-500 text-left">
+      <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-left">
         <tr>
-          <th class="px-4 py-2 font-medium">Когда</th>
-          <th class="px-4 py-2 font-medium">Тема</th>
-          <th class="px-4 py-2 font-medium">Клиент</th>
-          <th class="px-4 py-2 font-medium">Ответственный</th>
+          <th class="px-4 py-2 font-medium">{{ t('meet.when') }}</th>
+          <th class="px-4 py-2 font-medium">{{ t('meet.topic') }}</th>
+          <th class="px-4 py-2 font-medium">{{ t('meet.client') }}</th>
+          <th class="px-4 py-2 font-medium">{{ t('meet.responsible') }}</th>
           <th class="px-4 py-2"></th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100">
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
         {% for mt in meetings %}
-        <tr class="hover:bg-slate-50">
-          <td class="px-4 py-2 whitespace-nowrap text-slate-600">{{ mt.starts_at | dt }}</td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+          <td class="px-4 py-2 whitespace-nowrap text-slate-600 dark:text-slate-300">{{ mt.starts_at | dt }}</td>
           <td class="px-4 py-2 font-medium">{{ mt.title }}</td>
-          <td class="px-4 py-2"><a href="/accounts/{{ mt.account_id }}#meetings" class="text-indigo-600 hover:underline">{{ mt.account.name }}</a></td>
-          <td class="px-4 py-2 text-slate-600">{{ mt.owner.name if mt.owner else "—" }}</td>
+          <td class="px-4 py-2"><a href="/accounts/{{ mt.account_id }}#meetings" class="text-indigo-600 dark:text-indigo-400 hover:underline">{{ mt.account.name }}</a></td>
+          <td class="px-4 py-2 text-slate-600 dark:text-slate-300">{{ mt.owner.name if mt.owner else "—" }}</td>
           <td class="px-4 py-2 text-right">
-            {% if current_user.role in ['admin','manager'] %}<a href="/meetings/{{ mt.id }}/edit" class="text-slate-400 hover:text-slate-700" title="Изменить">✎</a>{% endif %}
+            {% if current_user.role in ['admin','manager'] %}<a href="/meetings/{{ mt.id }}/edit" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" title="{{ t('common.edit') }}">✎</a>{% endif %}
           </td>
         </tr>
-        {% else %}<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">Встреч нет.</td></tr>{% endfor %}
+        {% else %}<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">{{ t('meet.none') }}</td></tr>{% endfor %}
       </tbody>
     </table>
   </div>
 
   {% if current_user.role in ['admin','manager'] %}
-  <div class="bg-white rounded-xl shadow-sm p-5">
-    <h2 class="font-semibold mb-3">Новая встреча</h2>
+  <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
+    <h2 class="font-semibold mb-3">{{ t('meet.new') }}</h2>
     <form method="post" action="/meetings" class="space-y-2">
       <input type="hidden" name="redirect" value="/meetings">
-      <select name="account_id" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
-        <option value="">— клиент * —</option>
+      <select name="account_id" required class="{{ inp }}">
+        <option value="">— {{ t('meet.client') }} * —</option>
         {% for a in accounts %}<option value="{{ a.id }}">{{ a.name }}</option>{% endfor %}
       </select>
-      <input name="title" placeholder="Тема *" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
-      <label class="block text-xs text-slate-500">Начало *<input name="starts_at" type="datetime-local" required class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
-      <label class="block text-xs text-slate-500">Конец<input name="ends_at" type="datetime-local" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm"></label>
-      <input name="location" placeholder="Место / ссылка" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
-      <input name="participants" placeholder="Участники" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
-      <select name="owner_id" class="w-full border border-slate-300 rounded px-2 py-1.5 text-sm">
-        <option value="">Ответственный…</option>
+      <input name="title" placeholder="{{ t('meet.topic') }} *" required class="{{ inp }}">
+      <label class="block text-xs text-slate-500 dark:text-slate-400">{{ t('meet.start') }} *<input name="starts_at" type="datetime-local" required class="{{ inp }}"></label>
+      <label class="block text-xs text-slate-500 dark:text-slate-400">{{ t('meet.end') }}<input name="ends_at" type="datetime-local" class="{{ inp }}"></label>
+      <input name="location" placeholder="{{ t('meet.location') }}" class="{{ inp }}">
+      <input name="participants" placeholder="{{ t('meet.participants') }}" class="{{ inp }}">
+      <select name="owner_id" class="{{ inp }}">
+        <option value="">{{ t('meet.responsible') }}…</option>
         {% for u in users %}<option value="{{ u.id }}" {{ 'selected' if u.id==current_user.id }}>{{ u.name }}</option>{% endfor %}
       </select>
-      <button class="w-full bg-slate-900 text-white rounded py-2 text-sm hover:bg-slate-700">Запланировать</button>
+      <button class="w-full bg-slate-900 dark:bg-indigo-600 text-white rounded py-2 text-sm hover:bg-slate-700 dark:hover:bg-indigo-500">{{ t('meet.schedule') }}</button>
     </form>
   </div>
   {% endif %}

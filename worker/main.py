@@ -30,6 +30,14 @@ async def _tick():
 
 
 async def main():
+    # Make sure additive columns exist even if the worker boots before web.
+    try:
+        from app.init_db import ensure_columns
+
+        await ensure_columns()
+    except Exception:  # noqa: BLE001
+        log.exception("ensure_columns failed (will rely on web migration)")
+
     scheduler = AsyncIOScheduler(timezone="UTC")
     scheduler.add_job(_tick, "interval", minutes=1, next_run_time=None)
     scheduler.start()

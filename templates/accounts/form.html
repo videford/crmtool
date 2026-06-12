@@ -1,50 +1,50 @@
 {% extends "base.html" %}
-{% block title %}{{ "Редактирование" if account else "Новый клиент" }} — crmTool{% endblock %}
+{% block title %}{{ t('client.edit') if account else t('client.new_title') }} — crmTool{% endblock %}
 {% block content %}
 <div class="max-w-2xl">
-  <h1 class="text-2xl font-semibold mb-5">{{ "Редактирование клиента" if account else "Новый клиент" }}</h1>
+  <h1 class="text-2xl font-semibold mb-5">{{ t('client.edit') if account else t('client.new_title') }}</h1>
   <form method="post" action="{{ '/accounts/' ~ account.id ~ '/edit' if account else '/accounts' }}"
-        class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 space-y-4">
     <div>
-      <label class="block text-sm text-slate-600 mb-1">Название *</label>
+      <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('client.name') }} *</label>
       <input name="name" required value="{{ account.name if account else '' }}"
-             class="w-full border border-slate-300 rounded px-3 py-2">
+             class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Тип</label>
-        <select name="type" class="w-full border border-slate-300 rounded px-3 py-2">
-          <option value="company" {{ 'selected' if account and account.type=='company' }}>Компания</option>
-          <option value="bank" {{ 'selected' if account and account.type=='bank' }}>Банк</option>
+        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('client.type') }}</label>
+        <select name="type" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">
+          <option value="company" {{ 'selected' if account and account.type=='company' }}>{{ t('client.company') }}</option>
+          <option value="bank" {{ 'selected' if account and account.type=='bank' }}>{{ t('client.bank') }}</option>
         </select>
       </div>
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Отрасль</label>
+        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('client.industry') }}</label>
         <input name="industry" value="{{ account.industry or '' if account else '' }}"
-               class="w-full border border-slate-300 rounded px-3 py-2">
+               class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">
       </div>
     </div>
     <div>
-      <label class="block text-sm text-slate-600 mb-1">Сайт</label>
+      <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('client.website') }}</label>
       <input name="website" value="{{ account.website or '' if account else '' }}"
-             class="w-full border border-slate-300 rounded px-3 py-2">
+             class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">
     </div>
     <div>
-      <label class="block text-sm text-slate-600 mb-1">Ответственный</label>
-      <select name="owner_id" class="w-full border border-slate-300 rounded px-3 py-2">
-        <option value="">— не назначен —</option>
+      <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('client.owner') }}</label>
+      <select name="owner_id" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">
+        <option value="">{{ t('client.owner_none') }}</option>
         {% for u in users %}
         <option value="{{ u.id }}" {{ 'selected' if account and account.owner_id==u.id }}>{{ u.name }}</option>
         {% endfor %}
       </select>
     </div>
     <div>
-      <label class="block text-sm text-slate-600 mb-1">Заметки</label>
-      <textarea name="notes" rows="4" class="w-full border border-slate-300 rounded px-3 py-2">{{ account.notes or '' if account else '' }}</textarea>
+      <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('client.notes') }}</label>
+      <textarea name="notes" rows="4" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2">{{ account.notes or '' if account else '' }}</textarea>
     </div>
     <div class="flex gap-3">
-      <button class="bg-slate-900 text-white rounded px-5 py-2 hover:bg-slate-700">Сохранить</button>
-      <a href="{{ '/accounts/' ~ account.id if account else '/accounts' }}" class="px-5 py-2 text-slate-600 hover:underline">Отмена</a>
+      <button class="bg-slate-900 dark:bg-indigo-600 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-indigo-500">{{ t('common.save') }}</button>
+      <a href="{{ '/accounts/' ~ account.id if account else '/accounts' }}" class="px-5 py-2 text-slate-600 dark:text-slate-300 hover:underline">{{ t('common.cancel') }}</a>
     </div>
   </form>
 </div>

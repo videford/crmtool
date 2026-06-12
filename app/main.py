@@ -9,6 +9,7 @@ from app.routers import (
     contacts,
     dashboard,
     deals,
+    lang,
     linear_webhook,
     meetings,
     settings_routes,
@@ -43,6 +44,7 @@ async def health():
 
 
 app.include_router(auth.router)
+app.include_router(lang.router)
 app.include_router(dashboard.router)
 app.include_router(accounts.router)
 app.include_router(contacts.router)

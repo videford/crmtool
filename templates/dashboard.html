@@ -1,48 +1,48 @@
 {% extends "base.html" %}
 {% import "_macros.html" as m %}
-{% block title %}Дашборд — crmTool{% endblock %}
+{% block title %}{{ t('dash.title') }} — crmTool{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-semibold mb-5">Дашборд</h1>
+<h1 class="text-2xl font-semibold mb-5">{{ t('dash.title') }}</h1>
 
-<div class="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
-  <div class="bg-white rounded-xl p-4 shadow-sm">
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
     <div class="text-2xl sm:text-3xl font-semibold">{{ counts.accounts }}</div>
-    <div class="text-xs sm:text-sm text-slate-500">Клиентов</div>
+    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.clients') }}</div>
   </div>
-  <div class="bg-white rounded-xl p-4 shadow-sm">
+  <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
     <div class="text-2xl sm:text-3xl font-semibold">{{ counts.meetings }}</div>
-    <div class="text-xs sm:text-sm text-slate-500">Предстоящих встреч</div>
+    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.upcoming_meetings') }}</div>
   </div>
-  <div class="bg-white rounded-xl p-4 shadow-sm">
+  <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
     <div class="text-2xl sm:text-3xl font-semibold">{{ counts.open_tasks }}</div>
-    <div class="text-xs sm:text-sm text-slate-500">Открытых задач</div>
+    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.open_tasks') }}</div>
   </div>
 </div>
 
-<div class="bg-white rounded-xl p-5 shadow-sm mb-6">
-  <h2 class="font-semibold mb-4">Воронка в деньгах</h2>
+<div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm mb-6">
+  <h2 class="font-semibold mb-4">{{ t('dash.pipeline_money') }}</h2>
   <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-5">
     <div>
       <div class="text-lg sm:text-2xl font-semibold">{{ "{:,.0f}".format(pipeline.open_value|float) }} ₽</div>
-      <div class="text-xs sm:text-sm text-slate-500">В работе</div>
+      <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.in_work') }}</div>
     </div>
     <div>
-      <div class="text-lg sm:text-2xl font-semibold text-indigo-600">{{ "{:,.0f}".format(pipeline.weighted|float) }} ₽</div>
-      <div class="text-xs sm:text-sm text-slate-500">Взвешенный прогноз</div>
+      <div class="text-lg sm:text-2xl font-semibold text-indigo-600 dark:text-indigo-400">{{ "{:,.0f}".format(pipeline.weighted|float) }} ₽</div>
+      <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.weighted') }}</div>
     </div>
     <div>
-      <div class="text-lg sm:text-2xl font-semibold text-green-600">{{ "{:,.0f}".format(pipeline.won_value|float) }} ₽</div>
-      <div class="text-xs sm:text-sm text-slate-500">Выиграно</div>
+      <div class="text-lg sm:text-2xl font-semibold text-green-600 dark:text-green-400">{{ "{:,.0f}".format(pipeline.won_value|float) }} ₽</div>
+      <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.won') }}</div>
     </div>
   </div>
   <div class="space-y-2">
     {% for s in by_stage %}
     <div class="flex items-center gap-3 text-sm">
-      <div class="w-24 sm:w-28 shrink-0 capitalize text-slate-600">{{ s.stage }}</div>
-      <div class="flex-1 bg-slate-100 rounded h-5 overflow-hidden">
+      <div class="w-24 sm:w-28 shrink-0 capitalize text-slate-600 dark:text-slate-300">{{ s.stage }}</div>
+      <div class="flex-1 bg-slate-100 dark:bg-slate-700 rounded h-5 overflow-hidden">
         <div class="bg-indigo-400 h-5" style="width: {{ (s.value / max_stage_value * 100) if s.value else 0 }}%"></div>
       </div>
-      <div class="w-32 sm:w-40 shrink-0 text-right text-slate-600">
+      <div class="w-32 sm:w-40 shrink-0 text-right text-slate-600 dark:text-slate-300">
         {{ "{:,.0f}".format(s.value) }} ₽ <span class="text-slate-400">· {{ s.count }}</span>
       </div>
     </div>
@@ -51,45 +51,45 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <div class="bg-white rounded-xl p-5 shadow-sm">
-    <h2 class="font-semibold mb-3">Ближайшие встречи (7 дней)</h2>
+  <div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm">
+    <h2 class="font-semibold mb-3">{{ t('dash.upcoming_7d') }}</h2>
     {% if upcoming %}
-    <ul class="divide-y divide-slate-100">
+    <ul class="divide-y divide-slate-100 dark:divide-slate-700">
       {% for mt in upcoming %}
       <li class="py-2 flex justify-between gap-3">
         <div>
           <a href="/accounts/{{ mt.account_id }}#meetings" class="font-medium hover:underline">{{ mt.title }}</a>
-          <div class="text-sm text-slate-500">{{ mt.account.name }}</div>
+          <div class="text-sm text-slate-500 dark:text-slate-400">{{ mt.account.name }}</div>
         </div>
-        <div class="text-sm text-slate-600 whitespace-nowrap">{{ mt.starts_at | dt }}</div>
+        <div class="text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">{{ mt.starts_at | dt }}</div>
       </li>
       {% endfor %}
     </ul>
-    {% else %}<p class="text-sm text-slate-400">Нет запланированных встреч.</p>{% endif %}
+    {% else %}<p class="text-sm text-slate-400">{{ t('dash.no_meetings') }}</p>{% endif %}
   </div>
 
-  <div class="bg-white rounded-xl p-5 shadow-sm">
-    <h2 class="font-semibold mb-3">Открытые задачи</h2>
+  <div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm">
+    <h2 class="font-semibold mb-3">{{ t('dash.open_tasks_h') }}</h2>
     {% if open_tasks %}
-    <ul class="divide-y divide-slate-100">
-      {% for t in open_tasks %}
+    <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+      {% for t_ in open_tasks %}
       <li class="py-2 flex justify-between gap-3">
         <div>
-          <a href="/accounts/{{ t.account_id }}#tasks" class="font-medium hover:underline">{{ t.title }}</a>
-          <div class="text-sm text-slate-500">{{ t.account.name }}{% if t.assignee %} · 👤 {{ t.assignee.name }}{% endif %}{% if t.linear_url %} · <a href="{{ t.linear_url }}" target="_blank" class="text-indigo-600">Linear ↗</a>{% endif %}</div>
+          <a href="/accounts/{{ t_.account_id }}#tasks" class="font-medium hover:underline">{{ t_.title }}</a>
+          <div class="text-sm text-slate-500 dark:text-slate-400">{{ t_.account.name }}{% if t_.assignee %} · 👤 {{ t_.assignee.name }}{% endif %}{% if t_.linear_url %} · <a href="{{ t_.linear_url }}" target="_blank" class="text-indigo-600 dark:text-indigo-400">Linear ↗</a>{% endif %}</div>
         </div>
-        {{ m.task_badge(t.status) }}
+        {{ m.task_badge(t_.status) }}
       </li>
       {% endfor %}
     </ul>
-    {% else %}<p class="text-sm text-slate-400">Открытых задач нет.</p>{% endif %}
+    {% else %}<p class="text-sm text-slate-400">{{ t('dash.no_tasks') }}</p>{% endif %}
   </div>
 </div>
 
-<div class="bg-white rounded-xl p-5 shadow-sm mt-6">
-  <h2 class="font-semibold mb-3">Последняя активность</h2>
+<div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm mt-6">
+  <h2 class="font-semibold mb-3">{{ t('dash.recent_activity') }}</h2>
   {% if recent %}
-  <ul class="divide-y divide-slate-100">
+  <ul class="divide-y divide-slate-100 dark:divide-slate-700">
     {% for a in recent %}
     <li class="py-2 flex justify-between gap-3 text-sm">
       <div>
@@ -101,6 +101,6 @@
     </li>
     {% endfor %}
   </ul>
-  {% else %}<p class="text-sm text-slate-400">Пока нет активности.</p>{% endif %}
+  {% else %}<p class="text-sm text-slate-400">{{ t('dash.no_activity') }}</p>{% endif %}
 </div>
 {% endblock %}
