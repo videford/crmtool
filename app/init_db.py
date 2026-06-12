@@ -25,18 +25,25 @@ _COLUMN_PATCHES = [
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS language VARCHAR(8) DEFAULT 'ru'",
 ]
 
+# One-time data migrations to the guest/member/admin role model. Idempotent:
+# after the first run no rows match the old role names.
+_DATA_PATCHES = [
+    "UPDATE users SET role='admin' WHERE role='manager'",
+    "UPDATE users SET role='member' WHERE role='viewer'",
+]
+
 
 async def ensure_columns() -> None:
-    """Apply additive column patches. Safe to run from any service, anytime."""
+    """Apply additive column + data patches. Safe to run from any service."""
     async with engine.begin() as conn:
-        for stmt in _COLUMN_PATCHES:
+        for stmt in _COLUMN_PATCHES + _DATA_PATCHES:
             await conn.execute(text(stmt))
 
 
 async def init() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        for stmt in _COLUMN_PATCHES:
+        for stmt in _COLUMN_PATCHES + _DATA_PATCHES:
             await conn.execute(text(stmt))
 
     # Sync the seed admin from env on every boot. Env is the source of truth

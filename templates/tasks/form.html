@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('task.edit') if task else t('task.new') }} — crmTool{% endblock %}
+{% block title %}{{ t('task.edit') if task else t('task.new') }} — CRM Tool{% endblock %}
 {% set inp = "w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2" %}
 {% block content %}
 <div class="max-w-2xl">
@@ -75,7 +75,7 @@
     {% endif %}
 
     <div class="flex flex-wrap gap-3">
-      <button class="bg-slate-900 dark:bg-indigo-600 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-indigo-500">{{ t('common.save') if task else t('task.create') }}{{ t('task.in_linear') if LINEAR_ENABLED and not task }}</button>
+      <button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-white">{{ t('common.save') if task else t('task.create') }}{{ t('task.in_linear') if LINEAR_ENABLED and not task }}</button>
       <a href="{{ '/accounts/' ~ task.account_id ~ '#tasks' if task else '/tasks' }}" class="px-5 py-2 text-slate-600 dark:text-slate-300 hover:underline">{{ t('common.cancel') }}</a>
     </div>
   </form>

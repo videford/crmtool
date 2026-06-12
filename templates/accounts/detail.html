@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% import "_macros.html" as m %}
-{% block title %}{{ account.name }} — crmTool{% endblock %}
+{% block title %}{{ account.name }} — CRM Tool{% endblock %}
 {% block content %}
-{% set can_edit = current_user.role in ['admin','manager'] %}
+{% set can_edit = current_user.role == 'admin' %}
 {% set back = '/accounts/' ~ account.id %}
 {% set card = "bg-white dark:bg-slate-800 rounded-xl shadow-sm" %}
 {% set inp = "border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-2 py-1.5 text-sm" %}
@@ -16,7 +16,7 @@
     </div>
     <div class="text-sm text-slate-500 dark:text-slate-400 mt-1">
       {{ account.industry or "—" }}
-      {% if account.website %} · <a href="{{ account.website }}" target="_blank" class="text-indigo-600 dark:text-indigo-400">{{ account.website }}</a>{% endif %}
+      {% if account.website %} · <a href="{{ account.website }}" target="_blank" class="text-slate-900 dark:text-slate-100">{{ account.website }}</a>{% endif %}
       · {{ t('client.owner') }}: {{ account.owner.name if account.owner else "—" }}
     </div>
   </div>
@@ -121,7 +121,7 @@
           <div>
             <div class="font-medium">{{ tk.title }}
               {% if tk.source=='auto' %}<span class="text-xs text-slate-400">auto</span>{% endif %}
-              {% if tk.linear_url %} · <a href="{{ tk.linear_url }}" target="_blank" class="text-indigo-600 dark:text-indigo-400">Linear ↗</a>{% endif %}
+              {% if tk.linear_url %} · <a href="{{ tk.linear_url }}" target="_blank" class="text-slate-900 dark:text-slate-100">Linear ↗</a>{% endif %}
             </div>
             <div class="text-xs text-slate-500 dark:text-slate-400">
               👤 {{ tk.assignee.name if tk.assignee else t('common.not_assigned') }}
@@ -187,10 +187,7 @@
         <input type="hidden" name="account_id" value="{{ account.id }}">
         <input type="hidden" name="redirect" value="{{ back }}#meetings">
         <input name="title" placeholder="{{ t('meet.topic') }} *" required class="w-full {{ inp }}">
-        <div class="grid grid-cols-2 gap-2">
-          <label class="text-xs text-slate-500 dark:text-slate-400">{{ t('meet.start') }} *<input name="starts_at" type="datetime-local" required class="w-full {{ inp }}"></label>
-          <label class="text-xs text-slate-500 dark:text-slate-400">{{ t('meet.end') }}<input name="ends_at" type="datetime-local" class="w-full {{ inp }}"></label>
-        </div>
+        <label class="block text-xs text-slate-500 dark:text-slate-400">{{ t('meet.start') }} *<input name="starts_at" type="datetime-local" required class="w-full {{ inp }}"></label>
         <input name="location" placeholder="{{ t('meet.location') }}" class="w-full {{ inp }}">
         <input name="participants" placeholder="{{ t('meet.participants') }}" class="w-full {{ inp }}">
         <select name="owner_id" class="w-full {{ inp }}">
@@ -219,7 +216,7 @@
         <li class="text-sm border-l-2 border-slate-200 dark:border-slate-600 pl-3">
           <div class="text-slate-400 text-xs">{{ a.created_at | dt }} · {{ a.type }}</div>
           <div>{{ a.body or "" }}
-            {% if a.payload and a.payload.linear_url %} <a href="{{ a.payload.linear_url }}" target="_blank" class="text-indigo-600 dark:text-indigo-400">Linear ↗</a>{% endif %}
+            {% if a.payload and a.payload.linear_url %} <a href="{{ a.payload.linear_url }}" target="_blank" class="text-slate-900 dark:text-slate-100">Linear ↗</a>{% endif %}
           </div>
         </li>
         {% else %}<li class="text-sm text-slate-400">{{ t('dash.no_activity') }}</li>{% endfor %}

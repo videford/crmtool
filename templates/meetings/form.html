@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('meet.edit') }} — crmTool{% endblock %}
+{% block title %}{{ t('meet.edit') }} — CRM Tool{% endblock %}
 {% set inp = "w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2" %}
 {% block content %}
 <div class="max-w-2xl">
@@ -12,15 +12,9 @@
       <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('meet.topic') }} *</label>
       <input name="title" required value="{{ meeting.title }}" class="{{ inp }}">
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('meet.start') }} *</label>
-        <input name="starts_at" type="datetime-local" required value="{{ meeting.starts_at | dtinput }}" class="{{ inp }}">
-      </div>
-      <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('meet.end') }}</label>
-        <input name="ends_at" type="datetime-local" value="{{ meeting.ends_at | dtinput }}" class="{{ inp }}">
-      </div>
+    <div>
+      <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('meet.start') }} *</label>
+      <input name="starts_at" type="datetime-local" required value="{{ meeting.starts_at | dtinput }}" class="{{ inp }}">
     </div>
     <div>
       <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('meet.responsible') }}</label>
@@ -38,7 +32,7 @@
       <input name="participants" value="{{ meeting.participants or '' }}" class="{{ inp }}">
     </div>
     <div class="flex flex-wrap gap-3">
-      <button class="bg-slate-900 dark:bg-indigo-600 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-indigo-500">{{ t('common.save') }}</button>
+      <button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-white">{{ t('common.save') }}</button>
       <a href="/accounts/{{ meeting.account_id }}#meetings" class="px-5 py-2 text-slate-600 dark:text-slate-300 hover:underline">{{ t('common.cancel') }}</a>
     </div>
   </form>

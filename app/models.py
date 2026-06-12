@@ -17,7 +17,7 @@ from app.db import Base
 
 # ---- Choice constants (kept as plain strings for easy iteration) ----
 
-ROLES = ["admin", "manager", "viewer"]
+ROLES = ["guest", "member", "admin"]
 
 ACCOUNT_TYPES = ["bank", "company"]
 
@@ -51,7 +51,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
-    role: Mapped[str] = mapped_column(String(32), default="manager")
+    role: Mapped[str] = mapped_column(String(32), default="guest")
     password_hash: Mapped[str] = mapped_column(String(255))
     telegram_chat_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     telegram_link_code: Mapped[str | None] = mapped_column(String(32), nullable=True)

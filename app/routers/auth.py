@@ -8,7 +8,7 @@ from app.db import get_session
 from app.i18n import normalize_lang
 from app.i18n import t as translate
 from app.models import User
-from app.security import hash_password, verify_password
+from app.security import hash_password, require_login, verify_password
 from app.templating import render, resolve_lang
 
 router = APIRouter()
@@ -85,9 +85,9 @@ async def register_submit(
             error=translate(lang, "auth.email_taken"),
             status_code=409,
         )
-    role = settings.default_role if settings.default_role in (
-        "admin", "manager", "viewer"
-    ) else "manager"
+    from app.models import ROLES
+
+    role = settings.default_role if settings.default_role in ROLES else "guest"
     user = User(
         name=name.strip(),
         email=email_norm,
@@ -99,6 +99,16 @@ async def register_submit(
     await session.commit()
     request.session["user_id"] = user.id
     return RedirectResponse(url="/", status_code=303)
+
+
+@router.get("/pending")
+async def pending_page(
+    request: Request,
+    user: User = Depends(require_login),
+):
+    if user.role != "guest":
+        return RedirectResponse(url="/", status_code=303)
+    return render(request, "pending.html", user=user)
 
 
 @router.get("/logout")

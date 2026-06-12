@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{{ t('client.title') }} — crmTool{% endblock %}
+{% block title %}{{ t('client.title') }} — CRM Tool{% endblock %}
 {% block content %}
 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
   <h1 class="text-2xl font-semibold">{{ t('client.title') }}</h1>
-  <a href="/accounts/new" class="bg-slate-900 dark:bg-indigo-600 text-white text-sm rounded px-4 py-2 hover:bg-slate-700 dark:hover:bg-indigo-500">+ {{ t('client.new') }}</a>
+  <a href="/accounts/new" class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white text-sm rounded px-4 py-2 hover:bg-slate-700 dark:hover:bg-white">+ {{ t('client.new') }}</a>
 </div>
 
 <form method="get" action="/accounts" class="mb-4">

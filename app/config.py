@@ -17,12 +17,14 @@ class Settings(BaseSettings):
     admin_password: str = "admin123"
     admin_name: str = "Admin"
 
-    # Self-registration
+    # Self-registration. New users start as "guest" (no access) until an admin
+    # approves them to "member"; admins can promote members to "admin".
     allow_registration: bool = True
-    default_role: str = "manager"  # role assigned to self-registered users
+    default_role: str = "guest"
 
     # Telegram
     telegram_bot_token: str = ""
+    telegram_bot_username: str = ""  # without @, e.g. "crm_tool_bot" — for deep links
     reminder_offsets: str = "1440,60,15"
 
     # Linear

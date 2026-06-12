@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from app.db import get_session
 from app.models import DEAL_STAGES, Account, Activity, Deal, Meeting, Task
-from app.security import User, require_login
+from app.security import User, require_member
 from app.templating import render
 from app.timeutil import now_utc
 
@@ -17,7 +17,7 @@ router = APIRouter()
 @router.get("/")
 async def dashboard(
     request: Request,
-    user: User = Depends(require_login),
+    user: User = Depends(require_member),
     session: AsyncSession = Depends(get_session),
 ):
     now = now_utc()

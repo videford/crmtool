@@ -2,9 +2,9 @@ import secrets
 
 import bcrypt
 from fastapi import Depends, Request
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.db import get_session
 from app.models import User
 
@@ -15,6 +15,10 @@ class NotAuthenticated(Exception):
 
 class NotAuthorized(Exception):
     """Raised when an authenticated user lacks the required role."""
+
+
+class PendingApproval(Exception):
+    """Raised when a logged-in guest awaits admin approval."""
 
 
 def hash_password(password: str) -> str:
@@ -30,6 +34,11 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 def new_link_code() -> str:
     return secrets.token_hex(4)
+
+
+def is_main_admin(user: User) -> bool:
+    """The seeded admin (ADMIN_EMAIL) is protected: never demoted or deleted."""
+    return user.email.strip().lower() == settings.admin_email.strip().lower()
 
 
 async def get_optional_user(
@@ -48,15 +57,30 @@ async def get_optional_user(
 async def require_login(
     user: User | None = Depends(get_optional_user),
 ) -> User:
+    """Any authenticated, active user (including a pending guest)."""
     if user is None:
         raise NotAuthenticated()
     return user
 
 
-def require_role(*roles: str):
-    async def _guard(user: User = Depends(require_login)) -> User:
-        if user.role not in roles and user.role != "admin":
-            raise NotAuthorized()
-        return user
+async def require_member(
+    user: User | None = Depends(get_optional_user),
+) -> User:
+    """Member or admin. Guests are bounced to the pending page."""
+    if user is None:
+        raise NotAuthenticated()
+    if user.role == "guest":
+        raise PendingApproval()
+    return user
 
-    return _guard
+
+async def require_admin(
+    user: User | None = Depends(get_optional_user),
+) -> User:
+    if user is None:
+        raise NotAuthenticated()
+    if user.role == "guest":
+        raise PendingApproval()
+    if user.role != "admin":
+        raise NotAuthorized()
+    return user

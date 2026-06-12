@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from app.db import get_session
 from app.models import DEAL_STAGES, Deal, User
-from app.security import require_login, require_role
+from app.security import require_admin, require_member
 from app.services.activities import log_activity
 from app.services.linear import create_task_with_linear
 from app.templating import render
@@ -24,7 +24,7 @@ AUTO_TASK_STAGES = {
 @router.get("")
 async def deal_board(
     request: Request,
-    user: User = Depends(require_login),
+    user: User = Depends(require_member),
     session: AsyncSession = Depends(get_session),
 ):
     deals = (
@@ -58,7 +58,7 @@ async def deal_board(
 async def edit_deal_form(
     request: Request,
     deal_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     deal = await session.get(
@@ -81,7 +81,7 @@ async def edit_deal(
     probability: str = Form("0"),
     owner_id: str = Form(""),
     expected_close: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     deal = await session.get(Deal, deal_id)
@@ -114,7 +114,7 @@ async def change_stage(
     deal_id: int,
     stage: str = Form(...),
     redirect: str = Form(""),
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     deal = await session.get(
@@ -157,7 +157,7 @@ async def change_stage(
 @router.post("/{deal_id}/delete")
 async def delete_deal(
     deal_id: int,
-    user: User = Depends(require_role("manager")),
+    user: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     deal = await session.get(Deal, deal_id)
