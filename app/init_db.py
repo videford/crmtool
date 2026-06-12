@@ -1,4 +1,4 @@
-"""Create tables (if missing) and seed the admin user.
+"""Create tables (if missing) and sync the admin user from env.
 
 Run as: python -m app.init_db
 
@@ -9,7 +9,7 @@ stabilizes; switch the entrypoint to `alembic upgrade head` at that point.
 
 import asyncio
 
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 
 from app.config import settings
 from app.db import Base, SessionLocal, engine
@@ -31,20 +31,29 @@ async def init() -> None:
         for stmt in _COLUMN_PATCHES:
             await conn.execute(text(stmt))
 
+    # Sync the seed admin from env on every boot. Env is the source of truth
+    # for this account, so changing ADMIN_EMAIL/ADMIN_PASSWORD and redeploying
+    # always lets you log in (values are stripped to avoid stray whitespace).
+    email = settings.admin_email.strip().lower()
+    name = settings.admin_name.strip()
+    password = settings.admin_password.strip()
+
     async with SessionLocal() as session:
-        existing = await session.scalar(select(User).limit(1))
-        if existing is None:
-            admin = User(
-                email=settings.admin_email,
-                name=settings.admin_name,
-                role="admin",
-                password_hash=hash_password(settings.admin_password),
-            )
+        admin = await session.scalar(
+            select(User).where(func.lower(User.email) == email)
+        )
+        if admin is None:
+            admin = User(email=email, name=name, role="admin")
             session.add(admin)
-            await session.commit()
-            print(f"[init_db] Seeded admin user: {settings.admin_email}")
+            action = "Seeded"
         else:
-            print("[init_db] Users already exist; skipping seed.")
+            action = "Updated"
+        admin.name = name
+        admin.role = "admin"
+        admin.is_active = True
+        admin.password_hash = hash_password(password)
+        await session.commit()
+        print(f"[init_db] {action} admin user: {email}")
 
     print("[init_db] Database ready.")
 

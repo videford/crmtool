@@ -71,7 +71,7 @@ async def require_user(message: Message, session) -> User | None:
     if user is None:
         await message.answer(
             "Вы не подключены. Откройте «Настройки» в CRM, получите код и "
-            "отправьте сюда: /start <код>"
+            "отправьте сюда: /start &lt;код&gt;"
         )
     return user
 
@@ -101,7 +101,7 @@ async def cmd_start(message: Message, command: CommandObject):
         if not code:
             await message.answer(
                 "Привет! Чтобы подключить уведомления, откройте «Настройки» в "
-                "CRM, получите код и отправьте сюда:\n/start <код>"
+                "CRM, получите код и отправьте сюда:\n/start &lt;код&gt;"
             )
             return
         user = await session.scalar(
