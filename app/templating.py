@@ -40,6 +40,7 @@ templates.env.globals.update(
         "TELEGRAM_ENABLED": settings.telegram_enabled,
         "LANGUAGES": LANGUAGES,
         "LANGUAGE_NAMES": LANGUAGE_NAMES,
+        "CURRENCY": settings.currency_symbol,
     }
 )
 

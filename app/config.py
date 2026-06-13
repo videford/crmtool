@@ -10,7 +10,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://crm:crm@localhost:5432/crm"
     session_secret: str = "change-me-in-prod"
     base_url: str = "http://localhost:8000"
-    timezone: str = "Europe/Moscow"
+    timezone: str = "Asia/Tashkent"
+    currency_symbol: str = "сўм"
 
     # Seed admin
     admin_email: str = "admin@example.com"

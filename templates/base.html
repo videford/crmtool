@@ -20,8 +20,8 @@
   <style>
     body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
     /* Neutral accent (no blue) + native date/time picker follows the theme. */
-    html{color-scheme:light;accent-color:#0f172a}
-    html.dark{color-scheme:dark;accent-color:#e2e8f0}
+    html{color-scheme:light;accent-color:#18181b}
+    html.dark{color-scheme:dark;accent-color:#e4e4e7}
   </style>
   <script>
     // Force 24-hour time (no AM/PM) on all date/time inputs regardless of UI language.
@@ -31,12 +31,12 @@
     });
   </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen">
+<body class="bg-zinc-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 min-h-screen">
 {% macro lang_switch(extra) %}
   <div class="flex items-center gap-1 text-xs {{ extra }}">
     {% for code in LANGUAGES %}
     <a href="/set-language?lang={{ code }}&next={{ request.url.path }}"
-       class="px-1.5 py-0.5 rounded uppercase {{ 'bg-slate-700 text-white' if lang==code else 'text-slate-400 hover:text-white' }}">{{ code }}</a>
+       class="px-1.5 py-0.5 rounded uppercase {{ 'bg-zinc-700 text-white' if lang==code else 'text-zinc-400 hover:text-white' }}">{{ code }}</a>
     {% endfor %}
   </div>
 {% endmacro %}
@@ -47,7 +47,7 @@
 </script>
 
 <!-- Mobile top bar -->
-<header class="md:hidden sticky top-0 z-30 flex items-center gap-3 bg-slate-900 text-white px-4 h-14">
+<header class="md:hidden sticky top-0 z-30 flex items-center gap-3 bg-black text-white px-4 h-14">
   <button onclick="openDrawer()" aria-label="Menu" class="text-2xl leading-none">&#9776;</button>
   <span class="font-semibold">CRM Tool</span>
   <button onclick="toggleTheme()" class="ml-auto text-lg" aria-label="Theme">🌓</button>
@@ -57,28 +57,28 @@
   <div id="backdrop" onclick="closeDrawer()" class="hidden fixed inset-0 bg-black/40 z-30 md:hidden"></div>
 
   <aside id="drawer"
-         class="fixed md:static inset-y-0 left-0 z-40 w-64 md:w-56 bg-slate-900 text-slate-200
-                flex flex-col shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200">
-    <div class="px-5 py-4 text-lg font-semibold border-b border-slate-700 flex items-center justify-between">
+         class="fixed md:static inset-y-0 left-0 z-40 w-64 md:w-56 bg-black text-zinc-300
+                flex flex-col shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 border-r border-zinc-800">
+    <div class="px-5 py-4 text-lg font-semibold border-b border-zinc-800 flex items-center justify-between">
       <span>CRM Tool</span>
       <button onclick="closeDrawer()" class="md:hidden text-xl" aria-label="Close">&times;</button>
     </div>
     <nav class="flex-1 px-2 py-3 space-y-1 text-sm overflow-y-auto">
       {% set nav = [('/', t('nav.dashboard')), ('/accounts', t('nav.clients')), ('/deals', t('nav.pipeline')), ('/meetings', t('nav.meetings')), ('/tasks', t('nav.tasks')), ('/settings', t('nav.settings'))] %}
       {% for href, label in nav %}
-      <a href="{{ href }}" class="block px-3 py-2.5 rounded hover:bg-slate-700
-        {% if request.url.path == href or (href != '/' and request.url.path.startswith(href)) %}bg-slate-700 font-medium{% endif %}">{{ label }}</a>
+      <a href="{{ href }}" class="block px-3 py-2.5 rounded hover:bg-zinc-800
+        {% if request.url.path == href or (href != '/' and request.url.path.startswith(href)) %}bg-zinc-800 text-white font-medium{% endif %}">{{ label }}</a>
       {% endfor %}
     </nav>
-    <div class="px-4 py-3 border-t border-slate-700 text-xs space-y-2">
+    <div class="px-4 py-3 border-t border-zinc-800 text-xs space-y-2">
       <div class="flex items-center justify-between">
         {{ lang_switch('') }}
         <button onclick="toggleTheme()" class="text-base" aria-label="Theme" title="{{ t('common.theme') }}">🌓</button>
       </div>
       <div>
-        <div class="font-medium text-slate-100">{{ current_user.name }}</div>
-        <div class="text-slate-400">{{ t('role.' ~ current_user.role) }}</div>
-        <a href="/logout" class="inline-block mt-1 text-slate-300 hover:text-white">{{ t('nav.logout') }} →</a>
+        <div class="font-medium text-zinc-100">{{ current_user.name }}</div>
+        <div class="text-zinc-400">{{ t('role.' ~ current_user.role) }}</div>
+        <a href="/logout" class="inline-block mt-1 text-zinc-300 hover:text-white">{{ t('nav.logout') }} →</a>
       </div>
     </div>
   </aside>

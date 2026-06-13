@@ -75,6 +75,7 @@ class Account(Base):
     type: Mapped[str] = mapped_column(String(32), default="company")
     industry: Mapped[str | None] = mapped_column(String(128), nullable=True)
     website: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    address: Mapped[str | None] = mapped_column(String(512), nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     owner_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"), nullable=True
@@ -130,7 +131,7 @@ class Deal(Base):
     title: Mapped[str] = mapped_column(String(255))
     stage: Mapped[str] = mapped_column(String(32), default="lead")
     amount: Mapped[float | None] = mapped_column(Numeric(14, 2), nullable=True)
-    currency: Mapped[str] = mapped_column(String(8), default="RUB")
+    currency: Mapped[str] = mapped_column(String(8), default="UZS")
     probability: Mapped[int] = mapped_column(Integer, default=0)
     owner_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"), nullable=True

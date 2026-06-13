@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block title %}{{ t('pending.title') }} — CRM Tool{% endblock %}
 {% block guest %}
-<div class="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950 px-4">
-  <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 text-center">
+<div class="min-h-screen flex items-center justify-center bg-zinc-100 dark:bg-zinc-950 px-4">
+  <div class="w-full max-w-md bg-white dark:bg-zinc-800 rounded-xl shadow-sm p-8 text-center">
     <div class="text-4xl mb-3">⏳</div>
     <h1 class="text-xl font-semibold mb-2">{{ t('pending.title') }}</h1>
-    <p class="text-sm text-slate-600 dark:text-slate-300">{{ t('pending.text') }}</p>
+    <p class="text-sm text-zinc-600 dark:text-zinc-300">{{ t('pending.text') }}</p>
     <div class="mt-5 flex items-center justify-center gap-3 text-sm">
-      <a href="/pending" class="border border-slate-300 dark:border-slate-600 rounded px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700">↻</a>
-      <a href="/logout" class="text-slate-500 dark:text-slate-400 hover:underline">{{ t('nav.logout') }} →</a>
+      <a href="/pending" class="border border-zinc-300 dark:border-zinc-600 rounded px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-700">↻</a>
+      <a href="/logout" class="text-zinc-500 dark:text-zinc-400 hover:underline">{{ t('nav.logout') }} →</a>
     </div>
   </div>
 </div>

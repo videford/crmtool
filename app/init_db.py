@@ -23,6 +23,7 @@ _COLUMN_PATCHES = [
     "ALTER TABLE tasks ADD COLUMN IF NOT EXISTS assignee_id INTEGER REFERENCES users(id)",
     "ALTER TABLE tasks ADD COLUMN IF NOT EXISTS due_date TIMESTAMPTZ",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS language VARCHAR(8) DEFAULT 'ru'",
+    "ALTER TABLE accounts ADD COLUMN IF NOT EXISTS address VARCHAR(512)",
 ]
 
 # One-time data migrations to the guest/member/admin role model. Idempotent:

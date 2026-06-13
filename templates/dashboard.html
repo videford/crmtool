@@ -5,45 +5,45 @@
 <h1 class="text-2xl font-semibold mb-5">{{ t('dash.title') }}</h1>
 
 <div class="grid grid-cols-3 gap-4 mb-6">
-  <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
+  <div class="bg-white dark:bg-zinc-800 rounded-xl p-4 shadow-sm">
     <div class="text-2xl sm:text-3xl font-semibold">{{ counts.accounts }}</div>
-    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.clients') }}</div>
+    <div class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">{{ t('dash.clients') }}</div>
   </div>
-  <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
+  <div class="bg-white dark:bg-zinc-800 rounded-xl p-4 shadow-sm">
     <div class="text-2xl sm:text-3xl font-semibold">{{ counts.meetings }}</div>
-    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.upcoming_meetings') }}</div>
+    <div class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">{{ t('dash.upcoming_meetings') }}</div>
   </div>
-  <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
+  <div class="bg-white dark:bg-zinc-800 rounded-xl p-4 shadow-sm">
     <div class="text-2xl sm:text-3xl font-semibold">{{ counts.open_tasks }}</div>
-    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.open_tasks') }}</div>
+    <div class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">{{ t('dash.open_tasks') }}</div>
   </div>
 </div>
 
-<div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm mb-6">
+<div class="bg-white dark:bg-zinc-800 rounded-xl p-5 shadow-sm mb-6">
   <h2 class="font-semibold mb-4">{{ t('dash.pipeline_money') }}</h2>
   <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-5">
     <div>
-      <div class="text-lg sm:text-2xl font-semibold">{{ "{:,.0f}".format(pipeline.open_value|float) }} ₽</div>
-      <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.in_work') }}</div>
+      <div class="text-lg sm:text-2xl font-semibold">{{ "{:,.0f}".format(pipeline.open_value|float) }} {{ CURRENCY }}</div>
+      <div class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">{{ t('dash.in_work') }}</div>
     </div>
     <div>
-      <div class="text-lg sm:text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ "{:,.0f}".format(pipeline.weighted|float) }} ₽</div>
-      <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.weighted') }}</div>
+      <div class="text-lg sm:text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{{ "{:,.0f}".format(pipeline.weighted|float) }} {{ CURRENCY }}</div>
+      <div class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">{{ t('dash.weighted') }}</div>
     </div>
     <div>
-      <div class="text-lg sm:text-2xl font-semibold text-green-600 dark:text-green-400">{{ "{:,.0f}".format(pipeline.won_value|float) }} ₽</div>
-      <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ t('dash.won') }}</div>
+      <div class="text-lg sm:text-2xl font-semibold text-green-600 dark:text-green-400">{{ "{:,.0f}".format(pipeline.won_value|float) }} {{ CURRENCY }}</div>
+      <div class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">{{ t('dash.won') }}</div>
     </div>
   </div>
   <div class="space-y-2">
     {% for s in by_stage %}
     <div class="flex items-center gap-3 text-sm">
-      <div class="w-24 sm:w-28 shrink-0 capitalize text-slate-600 dark:text-slate-300">{{ s.stage }}</div>
-      <div class="flex-1 bg-slate-100 dark:bg-slate-700 rounded h-5 overflow-hidden">
-        <div class="bg-slate-700 dark:bg-slate-300 h-5" style="width: {{ (s.value / max_stage_value * 100) if s.value else 0 }}%"></div>
+      <div class="w-24 sm:w-28 shrink-0 text-zinc-600 dark:text-zinc-300">{{ t('stage.' ~ s.stage) }}</div>
+      <div class="flex-1 bg-zinc-100 dark:bg-zinc-700 rounded h-5 overflow-hidden">
+        <div class="bg-zinc-700 dark:bg-zinc-300 h-5" style="width: {{ (s.value / max_stage_value * 100) if s.value else 0 }}%"></div>
       </div>
-      <div class="w-32 sm:w-40 shrink-0 text-right text-slate-600 dark:text-slate-300">
-        {{ "{:,.0f}".format(s.value) }} ₽ <span class="text-slate-400">· {{ s.count }}</span>
+      <div class="w-32 sm:w-40 shrink-0 text-right text-zinc-600 dark:text-zinc-300">
+        {{ "{:,.0f}".format(s.value) }} {{ CURRENCY }} <span class="text-zinc-400">· {{ s.count }}</span>
       </div>
     </div>
     {% endfor %}
@@ -51,56 +51,56 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm">
+  <div class="bg-white dark:bg-zinc-800 rounded-xl p-5 shadow-sm">
     <h2 class="font-semibold mb-3">{{ t('dash.upcoming_7d') }}</h2>
     {% if upcoming %}
-    <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+    <ul class="divide-y divide-zinc-100 dark:divide-zinc-700">
       {% for mt in upcoming %}
       <li class="py-2 flex justify-between gap-3">
         <div>
           <a href="/accounts/{{ mt.account_id }}#meetings" class="font-medium hover:underline">{{ mt.title }}</a>
-          <div class="text-sm text-slate-500 dark:text-slate-400">{{ mt.account.name }}</div>
+          <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ mt.account.name }}</div>
         </div>
-        <div class="text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">{{ mt.starts_at | dt }}</div>
+        <div class="text-sm text-zinc-600 dark:text-zinc-300 whitespace-nowrap">{{ mt.starts_at | dt }}</div>
       </li>
       {% endfor %}
     </ul>
-    {% else %}<p class="text-sm text-slate-400">{{ t('dash.no_meetings') }}</p>{% endif %}
+    {% else %}<p class="text-sm text-zinc-400">{{ t('dash.no_meetings') }}</p>{% endif %}
   </div>
 
-  <div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm">
+  <div class="bg-white dark:bg-zinc-800 rounded-xl p-5 shadow-sm">
     <h2 class="font-semibold mb-3">{{ t('dash.open_tasks_h') }}</h2>
     {% if open_tasks %}
-    <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+    <ul class="divide-y divide-zinc-100 dark:divide-zinc-700">
       {% for t_ in open_tasks %}
       <li class="py-2 flex justify-between gap-3">
         <div>
           <a href="/accounts/{{ t_.account_id }}#tasks" class="font-medium hover:underline">{{ t_.title }}</a>
-          <div class="text-sm text-slate-500 dark:text-slate-400">{{ t_.account.name }}{% if t_.assignee %} · 👤 {{ t_.assignee.name }}{% endif %}{% if t_.linear_url %} · <a href="{{ t_.linear_url }}" target="_blank" class="text-slate-900 dark:text-slate-100">Linear ↗</a>{% endif %}</div>
+          <div class="text-sm text-zinc-500 dark:text-zinc-400">{{ t_.account.name }}{% if t_.assignee %} · 👤 {{ t_.assignee.name }}{% endif %}{% if t_.linear_url %} · <a href="{{ t_.linear_url }}" target="_blank" class="text-zinc-900 dark:text-zinc-100">Linear ↗</a>{% endif %}</div>
         </div>
         {{ m.task_badge(t_.status) }}
       </li>
       {% endfor %}
     </ul>
-    {% else %}<p class="text-sm text-slate-400">{{ t('dash.no_tasks') }}</p>{% endif %}
+    {% else %}<p class="text-sm text-zinc-400">{{ t('dash.no_tasks') }}</p>{% endif %}
   </div>
 </div>
 
-<div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm mt-6">
+<div class="bg-white dark:bg-zinc-800 rounded-xl p-5 shadow-sm mt-6">
   <h2 class="font-semibold mb-3">{{ t('dash.recent_activity') }}</h2>
   {% if recent %}
-  <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+  <ul class="divide-y divide-zinc-100 dark:divide-zinc-700">
     {% for a in recent %}
     <li class="py-2 flex justify-between gap-3 text-sm">
       <div>
-        <span class="text-slate-400">[{{ a.type }}]</span>
+        <span class="text-zinc-400">[{{ a.type }}]</span>
         <a href="/accounts/{{ a.account_id }}" class="font-medium hover:underline">{{ a.account.name }}</a>
         — {{ a.body or "" }}
       </div>
-      <div class="text-slate-400 whitespace-nowrap">{{ a.created_at | dt }}</div>
+      <div class="text-zinc-400 whitespace-nowrap">{{ a.created_at | dt }}</div>
     </li>
     {% endfor %}
   </ul>
-  {% else %}<p class="text-sm text-slate-400">{{ t('dash.no_activity') }}</p>{% endif %}
+  {% else %}<p class="text-sm text-zinc-400">{{ t('dash.no_activity') }}</p>{% endif %}
 </div>
 {% endblock %}

@@ -76,6 +76,7 @@ async def create_account(
     type: str = Form("company"),
     industry: str = Form(""),
     website: str = Form(""),
+    address: str = Form(""),
     notes: str = Form(""),
     owner_id: str = Form(""),
     user: User = Depends(require_admin),
@@ -86,6 +87,7 @@ async def create_account(
         type=type,
         industry=industry.strip() or None,
         website=website.strip() or None,
+        address=address.strip() or None,
         notes=notes.strip() or None,
         owner_id=int(owner_id) if owner_id else user.id,
     )
@@ -166,6 +168,7 @@ async def edit_account(
     type: str = Form("company"),
     industry: str = Form(""),
     website: str = Form(""),
+    address: str = Form(""),
     notes: str = Form(""),
     owner_id: str = Form(""),
     user: User = Depends(require_admin),
@@ -178,10 +181,25 @@ async def edit_account(
     account.type = type
     account.industry = industry.strip() or None
     account.website = website.strip() or None
+    account.address = address.strip() or None
     account.notes = notes.strip() or None
     account.owner_id = int(owner_id) if owner_id else None
     await session.commit()
     return RedirectResponse(url=f"/accounts/{account_id}", status_code=303)
+
+
+@router.post("/{account_id}/notes")
+async def update_notes(
+    account_id: int,
+    notes: str = Form(""),
+    user: User = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    account = await session.get(Account, account_id)
+    if account is not None:
+        account.notes = notes.strip() or None
+        await session.commit()
+    return RedirectResponse(url=f"/accounts/{account_id}#notes", status_code=303)
 
 
 @router.post("/{account_id}/delete")
@@ -247,7 +265,7 @@ async def add_deal(
     title: str = Form(...),
     stage: str = Form("lead"),
     amount: str = Form(""),
-    currency: str = Form("RUB"),
+    currency: str = Form("UZS"),
     probability: str = Form("0"),
     expected_close: str = Form(""),
     user: User = Depends(require_admin),
@@ -258,7 +276,7 @@ async def add_deal(
         title=title.strip(),
         stage=stage,
         amount=float(amount) if amount.strip() else None,
-        currency=currency or "RUB",
+        currency=currency or "UZS",
         probability=int(probability) if probability.strip().isdigit() else 0,
         owner_id=user.id,
         expected_close=parse_local_dt(expected_close),

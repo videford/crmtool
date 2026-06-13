@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ t('set.title') }} — CRM Tool{% endblock %}
-{% set card = "bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5" %}
-{% set inp = "border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-2 py-1.5 text-sm" %}
+{% set card = "bg-white dark:bg-zinc-800 rounded-xl shadow-sm p-5" %}
+{% set inp = "border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 rounded px-2 py-1.5 text-sm" %}
 {% block content %}
 <h1 class="text-2xl font-semibold mb-5">{{ t('set.title') }}</h1>
 
@@ -10,9 +10,9 @@
     <section class="{{ card }}">
       <h2 class="font-semibold mb-3">{{ t('set.profile') }}</h2>
       <div class="text-sm space-y-1">
-        <div><span class="text-slate-500 dark:text-slate-400">{{ t('auth.name') }}:</span> {{ current_user.name }}</div>
-        <div><span class="text-slate-500 dark:text-slate-400">{{ t('auth.email') }}:</span> {{ current_user.email }}</div>
-        <div><span class="text-slate-500 dark:text-slate-400">{{ t('set.role') }}:</span> {{ t('role.' ~ current_user.role) }}</div>
+        <div><span class="text-zinc-500 dark:text-zinc-400">{{ t('auth.name') }}:</span> {{ current_user.name }}</div>
+        <div><span class="text-zinc-500 dark:text-zinc-400">{{ t('auth.email') }}:</span> {{ current_user.email }}</div>
+        <div><span class="text-zinc-500 dark:text-zinc-400">{{ t('set.role') }}:</span> {{ t('role.' ~ current_user.role) }}</div>
       </div>
     </section>
 
@@ -20,17 +20,17 @@
       <h2 class="font-semibold mb-3">{{ t('set.appearance') }}</h2>
       <div class="text-sm space-y-3">
         <div class="flex items-center gap-3">
-          <span class="text-slate-500 dark:text-slate-400 w-24">{{ t('common.theme') }}</span>
-          <button onclick="toggleTheme()" class="border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700">
+          <span class="text-zinc-500 dark:text-zinc-400 w-24">{{ t('common.theme') }}</span>
+          <button onclick="toggleTheme()" class="border border-zinc-300 dark:border-zinc-600 rounded px-3 py-1.5 hover:bg-zinc-50 dark:hover:bg-zinc-700">
             🌓 {{ t('set.theme_light') }} / {{ t('set.theme_dark') }}
           </button>
         </div>
         <div class="flex items-center gap-3">
-          <span class="text-slate-500 dark:text-slate-400 w-24">{{ t('common.language') }}</span>
+          <span class="text-zinc-500 dark:text-zinc-400 w-24">{{ t('common.language') }}</span>
           <div class="flex gap-1">
             {% for code in LANGUAGES %}
             <a href="/set-language?lang={{ code }}&next=/settings"
-               class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if lang==code else 'border border-slate-300 dark:border-slate-600' }}">{{ LANGUAGE_NAMES[code] }}</a>
+               class="px-3 py-1.5 rounded {{ 'bg-zinc-900 text-white' if lang==code else 'border border-zinc-300 dark:border-zinc-600' }}">{{ LANGUAGE_NAMES[code] }}</a>
             {% endfor %}
           </div>
         </div>
@@ -44,21 +44,21 @@
       {% elif current_user.telegram_chat_id %}
         <p class="text-sm text-green-600 dark:text-green-400 mb-3">✓ {{ t('set.tg_connected') }}</p>
         <form method="post" action="/settings/telegram/unlink">
-          <button class="text-sm border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700">{{ t('set.unlink') }}</button>
+          <button class="text-sm border border-zinc-300 dark:border-zinc-600 rounded px-3 py-1.5 hover:bg-zinc-50 dark:hover:bg-zinc-700">{{ t('set.unlink') }}</button>
         </form>
       {% elif tg_link %}
-        <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ t('set.link_tg_hint') }}</p>
+        <p class="text-sm text-zinc-600 dark:text-zinc-300 mb-2">{{ t('set.link_tg_hint') }}</p>
         <a href="{{ tg_link }}" target="_blank"
-           class="inline-block text-sm bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-4 py-2 hover:bg-slate-700 dark:hover:bg-white">
+           class="inline-block text-sm bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded px-4 py-2 hover:bg-zinc-700 dark:hover:bg-white">
           {{ t('set.link_tg_button') }} →
         </a>
       {% else %}
         {% if current_user.telegram_link_code %}
-        <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ t('set.send_command') }}</p>
-        <code class="block bg-slate-100 dark:bg-slate-900 rounded px-3 py-2 text-sm mb-3">/start {{ current_user.telegram_link_code }}</code>
+        <p class="text-sm text-zinc-600 dark:text-zinc-300 mb-2">{{ t('set.send_command') }}</p>
+        <code class="block bg-zinc-100 dark:bg-zinc-900 rounded px-3 py-2 text-sm mb-3">/start {{ current_user.telegram_link_code }}</code>
         {% endif %}
         <form method="post" action="/settings/telegram/regenerate">
-          <button class="text-sm bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-3 py-1.5 hover:bg-slate-700 dark:hover:bg-white">
+          <button class="text-sm bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded px-3 py-1.5 hover:bg-zinc-700 dark:hover:bg-white">
             {{ t('set.new_code') if current_user.telegram_link_code else t('set.get_code') }}
           </button>
         </form>
@@ -74,15 +74,15 @@
   {% if current_user.role == 'admin' %}
   <section class="{{ card }}">
     <h2 class="font-semibold mb-3">{{ t('set.users') }}</h2>
-    {% set pill = "text-xs border border-slate-300 dark:border-slate-600 rounded px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700" %}
-    <ul class="divide-y divide-slate-100 dark:divide-slate-700 mb-4">
+    {% set pill = "text-xs border border-zinc-300 dark:border-zinc-600 rounded px-2 py-1 hover:bg-zinc-50 dark:hover:bg-zinc-700" %}
+    <ul class="divide-y divide-zinc-100 dark:divide-zinc-700 mb-4">
       {% for u in users %}
       {% set main = is_main_admin(u) %}
       <li class="py-2 text-sm flex items-center justify-between gap-2 flex-wrap">
         <div>
           <span class="font-medium">{{ u.name }}</span>
-          <span class="text-slate-400">· {{ u.email }}</span>
-          <span class="ml-1 px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-xs">{{ t('role.' ~ u.role) }}{% if main %} · {{ t('set.main_admin') }}{% endif %}</span>
+          <span class="text-zinc-400">· {{ u.email }}</span>
+          <span class="ml-1 px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-xs">{{ t('role.' ~ u.role) }}{% if main %} · {{ t('set.main_admin') }}{% endif %}</span>
         </div>
         {% if not main %}
         <div class="flex items-center gap-1">
@@ -106,7 +106,7 @@
           {% endif %}
           {% if u.id != current_user.id %}
           <form method="post" action="/settings/users/{{ u.id }}/delete" onsubmit="return confirm('{{ t('set.user_delete_confirm') }}')">
-            <button class="text-slate-300 hover:text-red-500 text-base px-1" title="{{ t('common.delete') }}">✕</button>
+            <button class="text-zinc-300 hover:text-red-500 text-base px-1" title="{{ t('common.delete') }}">✕</button>
           </form>
           {% endif %}
         </div>
@@ -121,7 +121,7 @@
       <select name="role" class="{{ inp }}">
         {% for r in ROLES %}<option value="{{ r }}" {{ 'selected' if r=='member' }}>{{ t('role.' ~ r) }}</option>{% endfor %}
       </select>
-      <button class="col-span-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded py-1.5 text-sm">+ {{ t('set.add_user') }}</button>
+      <button class="col-span-2 bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 rounded py-1.5 text-sm">+ {{ t('set.add_user') }}</button>
     </form>
   </section>
   {% endif %}

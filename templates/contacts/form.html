@@ -1,38 +1,38 @@
 {% extends "base.html" %}
 {% block title %}{{ t('contact.edit') }} — CRM Tool{% endblock %}
-{% set inp = "w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2" %}
+{% set inp = "w-full border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 rounded px-3 py-2" %}
 {% block content %}
 <div class="max-w-xl">
-  <div class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+  <div class="text-sm text-zinc-500 dark:text-zinc-400 mb-2">
     <a href="/accounts/{{ contact.account_id }}#contacts" class="hover:underline">← {{ t('task.client') }}</a>
   </div>
   <h1 class="text-2xl font-semibold mb-5">{{ t('contact.edit') }}</h1>
-  <form method="post" action="/contacts/{{ contact.id }}/edit" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+  <form method="post" action="/contacts/{{ contact.id }}/edit" class="bg-white dark:bg-zinc-800 rounded-xl shadow-sm p-6 space-y-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('contact.name') }} *</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('contact.name') }} *</label>
         <input name="name" required value="{{ contact.name }}" class="{{ inp }}">
       </div>
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('contact.position') }}</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('contact.position') }}</label>
         <input name="position" value="{{ contact.position or '' }}" class="{{ inp }}">
       </div>
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('contact.email') }}</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('contact.email') }}</label>
         <input name="email" value="{{ contact.email or '' }}" class="{{ inp }}">
       </div>
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('contact.phone') }}</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('contact.phone') }}</label>
         <input name="phone" value="{{ contact.phone or '' }}" class="{{ inp }}">
       </div>
       <div class="sm:col-span-2">
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Telegram</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">Telegram</label>
         <input name="telegram" value="{{ contact.telegram or '' }}" class="{{ inp }}">
       </div>
     </div>
     <div class="flex flex-wrap gap-3">
-      <button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded px-5 py-2 hover:bg-slate-700 dark:hover:bg-white">{{ t('common.save') }}</button>
-      <a href="/accounts/{{ contact.account_id }}#contacts" class="px-5 py-2 text-slate-600 dark:text-slate-300 hover:underline">{{ t('common.cancel') }}</a>
+      <button class="bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded px-5 py-2 hover:bg-zinc-700 dark:hover:bg-white">{{ t('common.save') }}</button>
+      <a href="/accounts/{{ contact.account_id }}#contacts" class="px-5 py-2 text-zinc-600 dark:text-zinc-300 hover:underline">{{ t('common.cancel') }}</a>
     </div>
   </form>
   <form method="post" action="/contacts/{{ contact.id }}/delete" onsubmit="return confirm('{{ t('contact.delete_confirm') }}')" class="mt-3">

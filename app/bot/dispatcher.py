@@ -322,8 +322,8 @@ async def cb_account_card(cq: CallbackQuery):
     if open_deals:
         lines.append(f"\n<b>{_t(lang, 'bot.deals')}:</b>")
         for d in open_deals[:5]:
-            amt = f" — {d.amount:,.0f} {d.currency}" if d.amount else ""
-            lines.append(f"• {d.title} [{d.stage}]{amt}")
+            amt = f" — {d.amount:,.0f} {settings.currency_symbol}" if d.amount else ""
+            lines.append(f"• {d.title} [{_t(lang, 'stage.' + d.stage)}]{amt}")
     if next_meeting:
         when = next_meeting.starts_at.astimezone(LOCAL_TZ).strftime("%d.%m %H:%M")
         lines.append(f"\n📅 {_t(lang, 'bot.next_meeting')}: {when} — {next_meeting.title}")
@@ -486,9 +486,9 @@ async def cmd_deals(message: Message):
     total = 0
     for stage, count, amount in rows:
         total += float(amount or 0)
-        amt = f" — {float(amount):,.0f} ₽" if amount else ""
-        lines.append(f"• {stage}: {count}{amt}")
-    lines.append(f"\n{_t(lang, 'bot.total_in_work')}: <b>{total:,.0f} ₽</b>")
+        amt = f" — {float(amount):,.0f} {settings.currency_symbol}" if amount else ""
+        lines.append(f"• {_t(lang, 'stage.' + stage)}: {count}{amt}")
+    lines.append(f"\n{_t(lang, 'bot.total_in_work')}: <b>{total:,.0f} {settings.currency_symbol}</b>")
     await message.answer("\n".join(lines))
 
 

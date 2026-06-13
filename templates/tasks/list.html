@@ -6,24 +6,24 @@
   <h1 class="text-2xl font-semibold">{{ t('task.h') }}</h1>
   <div class="flex items-center gap-3 flex-wrap">
     <div class="text-sm flex items-center gap-1">
-      <a href="/tasks?status={{ status }}" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if mine!='1' else 'text-slate-600 dark:text-slate-300' }}">{{ t('common.all') }}</a>
-      <a href="/tasks?status={{ status }}&mine=1" class="px-3 py-1.5 rounded {{ 'bg-slate-900 text-white' if mine=='1' else 'text-slate-600 dark:text-slate-300' }}">{{ t('common.mine') }}</a>
+      <a href="/tasks?status={{ status }}" class="px-3 py-1.5 rounded {{ 'bg-zinc-900 text-white' if mine!='1' else 'text-zinc-600 dark:text-zinc-300' }}">{{ t('common.all') }}</a>
+      <a href="/tasks?status={{ status }}&mine=1" class="px-3 py-1.5 rounded {{ 'bg-zinc-900 text-white' if mine=='1' else 'text-zinc-600 dark:text-zinc-300' }}">{{ t('common.mine') }}</a>
     </div>
     {% if current_user.role == 'admin' %}
-    <a href="/tasks/new" class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white text-sm rounded px-4 py-2 hover:bg-slate-700 dark:hover:bg-white">+ {{ t('task.new') }}</a>
+    <a href="/tasks/new" class="bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white text-sm rounded px-4 py-2 hover:bg-zinc-700 dark:hover:bg-white">+ {{ t('task.new') }}</a>
     {% endif %}
   </div>
 </div>
 
 <div class="text-sm mb-4 flex gap-1 flex-wrap">
   {% for s, label in [('active', t('task.active')),('done', t('task.done')),('all', t('task.all_statuses'))] %}
-  <a href="/tasks?status={{ s }}{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-slate-200 dark:bg-slate-700' if status==s else 'text-slate-600 dark:text-slate-300' }}">{{ label }}</a>
+  <a href="/tasks?status={{ s }}{{ '&mine=1' if mine=='1' }}" class="px-3 py-1.5 rounded {{ 'bg-zinc-200 dark:bg-zinc-700' if status==s else 'text-zinc-600 dark:text-zinc-300' }}">{{ label }}</a>
   {% endfor %}
 </div>
 
-<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-x-auto">
+<div class="bg-white dark:bg-zinc-800 rounded-xl shadow-sm overflow-x-auto">
   <table class="w-full text-sm min-w-[720px]">
-    <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-left">
+    <thead class="bg-zinc-50 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 text-left">
       <tr>
         <th class="px-4 py-2 font-medium">{{ t('task.h') }}</th>
         <th class="px-4 py-2 font-medium">{{ t('task.client') }}</th>
@@ -33,31 +33,31 @@
         <th class="px-4 py-2 font-medium">Linear</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+    <tbody class="divide-y divide-zinc-100 dark:divide-zinc-700">
       {% for tk in tasks %}
       {% set overdue = tk.due_date and tk.due_date < now and tk.status in ['open','in_progress'] %}
-      <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+      <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-700/40">
         <td class="px-4 py-2 font-medium">
           {% if current_user.role == 'admin' %}<a href="/tasks/{{ tk.id }}/edit" class="hover:underline">{{ tk.title }}</a>{% else %}{{ tk.title }}{% endif %}
         </td>
-        <td class="px-4 py-2"><a href="/accounts/{{ tk.account_id }}#tasks" class="text-slate-900 dark:text-slate-100 hover:underline">{{ tk.account.name }}</a></td>
-        <td class="px-4 py-2 text-slate-600 dark:text-slate-300">{{ tk.assignee.name if tk.assignee else "—" }}</td>
-        <td class="px-4 py-2 whitespace-nowrap {{ 'text-red-600 dark:text-red-400 font-medium' if overdue else 'text-slate-600 dark:text-slate-300' }}">
+        <td class="px-4 py-2"><a href="/accounts/{{ tk.account_id }}#tasks" class="text-zinc-900 dark:text-zinc-100 hover:underline">{{ tk.account.name }}</a></td>
+        <td class="px-4 py-2 text-zinc-600 dark:text-zinc-300">{{ tk.assignee.name if tk.assignee else "—" }}</td>
+        <td class="px-4 py-2 whitespace-nowrap {{ 'text-red-600 dark:text-red-400 font-medium' if overdue else 'text-zinc-600 dark:text-zinc-300' }}">
           {{ (tk.due_date | dt) if tk.due_date else "—" }}{{ " ⚠" if overdue }}
         </td>
         <td class="px-4 py-2">
           {% if current_user.role == 'admin' %}
           <form method="post" action="/tasks/{{ tk.id }}/status">
             <input type="hidden" name="redirect" value="/tasks?status={{ status }}{{ '&mine=1' if mine=='1' }}">
-            <select name="status" onchange="this.form.submit()" class="border border-slate-300 dark:border-slate-600 dark:bg-slate-700 rounded px-1.5 py-1 text-xs">
+            <select name="status" onchange="this.form.submit()" class="border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 rounded px-1.5 py-1 text-xs">
               {% for s in TASK_STATUSES %}<option value="{{ s }}" {{ 'selected' if tk.status==s }}>{{ s }}</option>{% endfor %}
             </select>
           </form>
           {% else %}{{ m.task_badge(tk.status) }}{% endif %}
         </td>
-        <td class="px-4 py-2">{% if tk.linear_url %}<a href="{{ tk.linear_url }}" target="_blank" class="text-slate-900 dark:text-slate-100">↗</a>{% else %}—{% endif %}</td>
+        <td class="px-4 py-2">{% if tk.linear_url %}<a href="{{ tk.linear_url }}" target="_blank" class="text-zinc-900 dark:text-zinc-100">↗</a>{% else %}—{% endif %}</td>
       </tr>
-      {% else %}<tr><td colspan="6" class="px-4 py-6 text-center text-slate-400">{{ t('task.none') }}</td></tr>{% endfor %}
+      {% else %}<tr><td colspan="6" class="px-4 py-6 text-center text-zinc-400">{{ t('task.none') }}</td></tr>{% endfor %}
     </tbody>
   </table>
 </div>

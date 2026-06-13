@@ -1,23 +1,17 @@
-{% macro stage_badge(stage) %}
+{% macro stage_badge(stage, label=None) %}
 {% set colors = {
-  'lead':'bg-slate-200 text-slate-700',
-  'qualified':'bg-slate-200 text-slate-700',
-  'demo':'bg-slate-200 text-slate-700',
-  'pilot':'bg-amber-100 text-amber-700',
-  'procurement':'bg-slate-200 text-slate-700',
-  'contract':'bg-slate-200 text-slate-700',
-  'won':'bg-green-100 text-green-700',
-  'lost':'bg-red-100 text-red-700'
+  'pilot':'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  'won':'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
+  'lost':'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
 } %}
-<span class="text-xs px-2 py-0.5 rounded {{ colors.get(stage,'bg-slate-200 text-slate-700') }}">{{ stage }}</span>
+<span class="text-xs px-2 py-0.5 rounded {{ colors.get(stage,'bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200') }}">{{ label or stage }}</span>
 {% endmacro %}
 
-{% macro task_badge(status) %}
+{% macro task_badge(status, label=None) %}
 {% set colors = {
-  'open':'bg-slate-200 text-slate-700',
-  'in_progress':'bg-amber-100 text-amber-700',
-  'done':'bg-green-100 text-green-700',
-  'canceled':'bg-red-100 text-red-700'
+  'in_progress':'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  'done':'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
+  'canceled':'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
 } %}
-<span class="text-xs px-2 py-0.5 rounded {{ colors.get(status,'bg-slate-200 text-slate-700') }}">{{ status }}</span>
+<span class="text-xs px-2 py-0.5 rounded {{ colors.get(status,'bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200') }}">{{ label or status }}</span>
 {% endmacro %}

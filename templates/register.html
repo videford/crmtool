@@ -1,43 +1,43 @@
 {% extends "base.html" %}
 {% block title %}{{ t('auth.register_title') }} — CRM Tool{% endblock %}
 {% block guest %}
-<div class="min-h-screen flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-950 px-4">
+<div class="min-h-screen flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-950 px-4">
   <div class="w-full max-w-sm">
     <div class="flex items-center justify-between mb-3">
-      <div class="text-2xl font-semibold text-slate-800 dark:text-slate-100">CRM Tool</div>
+      <div class="text-2xl font-semibold text-zinc-800 dark:text-zinc-100">CRM Tool</div>
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-1 text-xs">
           {% for code in LANGUAGES %}
           <a href="/set-language?lang={{ code }}&next=/register"
-             class="px-1.5 py-0.5 rounded uppercase {{ 'bg-slate-800 text-white' if lang==code else 'text-slate-500 hover:text-slate-800 dark:hover:text-white' }}">{{ code }}</a>
+             class="px-1.5 py-0.5 rounded uppercase {{ 'bg-zinc-800 text-white' if lang==code else 'text-zinc-500 hover:text-zinc-800 dark:hover:text-white' }}">{{ code }}</a>
           {% endfor %}
         </div>
         <button onclick="toggleTheme()" class="text-lg" aria-label="Theme">🌓</button>
       </div>
     </div>
-    <form method="post" action="/register" class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm space-y-4">
-      <div class="text-lg font-semibold text-slate-800 dark:text-slate-100">{{ t('auth.register_title') }}</div>
+    <form method="post" action="/register" class="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-sm space-y-4">
+      <div class="text-lg font-semibold text-zinc-800 dark:text-zinc-100">{{ t('auth.register_title') }}</div>
       {% if error %}
         <div class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded px-3 py-2">{{ error }}</div>
       {% endif %}
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('auth.name') }}</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('auth.name') }}</label>
         <input name="name" required autofocus
-               class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400">
+               class="w-full border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zinc-400">
       </div>
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('auth.email') }}</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('auth.email') }}</label>
         <input name="email" type="email" required
-               class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400">
+               class="w-full border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zinc-400">
       </div>
       <div>
-        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">{{ t('auth.password') }}</label>
+        <label class="block text-sm text-zinc-600 dark:text-zinc-300 mb-1">{{ t('auth.password') }}</label>
         <input name="password" type="password" required minlength="6"
-               class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400">
+               class="w-full border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zinc-400">
       </div>
-      <button class="w-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded py-2 hover:bg-slate-700 dark:hover:bg-white">{{ t('auth.create_account') }}</button>
-      <div class="text-center text-sm text-slate-500 dark:text-slate-400">
-        {{ t('auth.have_account') }} <a href="/login" class="text-slate-900 dark:text-slate-100 hover:underline">{{ t('auth.login_link') }}</a>
+      <button class="w-full bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded py-2 hover:bg-zinc-700 dark:hover:bg-white">{{ t('auth.create_account') }}</button>
+      <div class="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {{ t('auth.have_account') }} <a href="/login" class="text-zinc-900 dark:text-zinc-100 hover:underline">{{ t('auth.login_link') }}</a>
       </div>
     </form>
   </div>
